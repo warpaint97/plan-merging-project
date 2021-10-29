@@ -1,4 +1,4 @@
 # plan-merging-project
 
-##Contact
+## Contact
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
