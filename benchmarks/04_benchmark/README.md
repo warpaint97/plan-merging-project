@@ -1,7 +1,6 @@
 # Benchmark 4
 
-This is our fourth benchmark on a 5x5 grid with two corridors and 2 robots on two ends. On the opposite ends there are two shelves with a product in them. If both robots will simply go straight towards a shelf, they will crash and cause a vertex collision conflict.
+This is our fourth benchmark on a 3x3 grid with two corridors and 4 robots, one on each side. In the center there is one shelf with one product. If more than one robot will move towards the shelf at once, it will result in a crash or vertex collision. It suffices when only one robot completes the order.
 
-
-![Benchmark4](instance/x5_y5_n9_r2_s2_ps0_pr2_u2_o2_N004.png "Benchmark4")
+![Benchmark4](instance/x3_y3_n5_r4_s1_ps0_pr1_u1_o1_N004.png "Benchmark4")
 
