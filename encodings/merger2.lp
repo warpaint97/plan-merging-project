@@ -39,12 +39,11 @@ max_conflict_depth(R,MAX_D-1) :- MAX_D == #sum{1,D : position(R,(X_,Y_),T_,D)}, 
 
 % final plan
 final_position(R,C,T) :- position(R,C,T,D), max_conflict_depth(R,D).
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T-1), final_position(R,(C2X,C2Y),T).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
 
 
 
 % output plan
-%#show.
-%#show init/2.
-%#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
-#show final_move/3.
+#show.
+#show init/2.
+#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
