@@ -5,7 +5,7 @@ This is a student project at the University of Potsdam which deals with the decl
 We aim to find a solution for intelligently merging plans of individual robots into one common plan for all robots to increase performance.
 
 ## Directory Structure
-- `benchmarks/` contains all the M-domain benchmarks for the asprilo framework.
+- `benchmarks/` contains all of our  M-domain benchmark instances for the asprilo framework.
 - `encodings/` contains all of our encodings for the plan merger.
 
 ## Contact
