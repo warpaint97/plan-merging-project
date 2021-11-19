@@ -34,7 +34,7 @@ position(R,(X,Y),T,D+1) :- position(R,(X,Y),T-1,D), wait(R,T_WAIT,D), T>=T_WAIT.
 
 
 % determine the max conflict depth for each robot
-max_conflict_depth(R,MAX_D-1) :- MAX_D == #sum{1,D : position(R,(_,__),___,D)}, isRobot(R).
+max_conflict_depth(R,MAX_D-1) :- MAX_D == #sum{1,D : position(R,(X_,Y_),T,D)}, isRobot(R).
 
 
 % final plan
