@@ -13,16 +13,23 @@ move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 position(R,(X+DX,Y+DY),T,0) :- move(R,(DX,DY),T), position(R,(X,Y),T-1,0).
 
 
-% edge collision
-edge_collision(R,R',T,D) :- position(R,C,T-1,D), position(R,C',T,D), position(R',C',T-1,D), position(R',C,T,D), R!=R', C!=C'.
+
+% vertex collision
+vertex_collision(C,T,D) :- position(R1,C,T,D), position(R2,C,T,D), R1!=R2.
+
+%conflicts
+conflict(R,T,D) :- vertex_collision(C,T,D), position(R,C,T,D).
+
+%wait
+wait(R2,T,D) :- conflict(R1,T,D), conflict(R2,T,D), R1<R2.
 
 
 
-% reconstruct positions and incorporate plan switching
-%before edge collision
-position(R,C,T,D+1) :- position(R,C,T,D), edge_collision(R,_,T_SWITCH,D), T<T_SWITCH.
-%after edge collision
-position(R,C,T,D+1) :- position(R',C,T+1,D), edge_collision(R,R',T_SWITCH,D), T>=T_SWITCH.
+% reconstruct positions and incorporate waiting
+%before wait
+position(R,(X,Y),T,D+1) :- position(R,(X,Y),T,D), wait(R,T_WAIT,D), T<T_WAIT.
+%after wait
+position(R,(X,Y),T,D+1) :- position(R,(X,Y),T-1,D), wait(R,T_WAIT,D), T>=T_WAIT.
 
 
 
@@ -32,7 +39,7 @@ max_conflict_depth(R,MAX_D-1) :- MAX_D == #sum{1,D : position(R,(X_,Y_),T_,D)}, 
 
 % final plan
 final_position(R,C,T) :- position(R,C,T,D), max_conflict_depth(R,D).
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T-1), final_position(R,(C2X,C2Y),T).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
 
 
 
