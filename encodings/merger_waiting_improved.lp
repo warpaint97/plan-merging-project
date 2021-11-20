@@ -1,0 +1,60 @@
+% plan merger encoding
+% implementing a waiting statement for robots of lower priority in the case of a vertex conflict
+
+
+%reading instance
+#include "./input.lp".
+
+#const max_layers=10.
+layer(0..max_layers).
+
+
+% read renamed plans (occurs -> occurs_)
+move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
+
+%calculate original positions recursively
+position(R,(X+DX,Y+DY),T,0) :- move(R,(DX,DY),T), position(R,(X,Y),T-1,0).
+
+
+
+% vertex collision
+vertex_collision(C,T,L) :- position(R1,C,T,L), position(R2,C,T,L), R1!=R2.
+
+%conflicts
+conflict(R,T,L) :- vertex_collision(C,T,L), position(R,C,T,L).
+
+%wait
+wait(R2,T,L) :- conflict(R1,T,L), conflict(R2,T,L), R1<R2.
+% only use first wait
+not_first_wait(R,T',L) :- wait(R,T,L), wait(R,T',L), T<T'.
+first_wait(R,T,L) :- not not_first_wait(R,T,L), wait(R,T,L).
+
+
+
+% reconstruct positions and incorporate waiting
+%before wait
+position(R,C,T,L+1) :- position(R,C,T,L), first_wait(R,T_WAIT,L), T<T_WAIT.
+%after wait
+position(R,C,T,L+1) :- position(R,C,T-1,L), first_wait(R,T_WAIT,L), T>=T_WAIT.
+
+% copy positions into new layer for unaffected robots 
+conflict(L) :- conflict(_R,_T,L).
+waited(R,L) :- first_wait(R,_T,L).
+position(R,C,T,L+1) :- position(R,C,T,L), conflict(L), not waited(R,L), layer(L).
+
+
+% determine the top layer
+top_layer(L_TOP-1) :- L_TOP == #sum{1,L : position(robot(1),(_X,_Y),_T,L)}.
+
+
+% final plan
+final_position(R,C,T) :- position(R,C,T,L), top_layer(L).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
+
+
+
+% output plan
+%#show.
+%#show init/2.
+%#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show position/4.
