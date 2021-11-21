@@ -1,0 +1,11 @@
+occurs_(object(robot,1),action(move,(1,0)),1).
+occurs_(object(robot,1),action(move,(1,0)),2).
+
+occurs_(object(robot,2),action(move,(0,-1)),1).
+occurs_(object(robot,2),action(move,(0,-1)),2).
+
+occurs_(object(robot,3),action(move,(1,0)),1).
+occurs_(object(robot,3),action(move,(1,0)),2).
+
+occurs_(object(robot,4),action(move,(0,-1)),1).
+occurs_(object(robot,4),action(move,(0,-1)),2).

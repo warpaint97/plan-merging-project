@@ -4,9 +4,8 @@
 
 % CONSTANTS
 % ----------------------------------------------------------------------------------------------
-% important for negated atoms
 #const max_layers=10.
-layer(0..max_layers).
+layer(0..max_layers-2).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -28,12 +27,12 @@ position(R,(X+DX,Y+DY),T,0) :- move(R,(DX,DY),T), position(R,(X,Y),T-1,0).
 
 % VERTEX COLLISION
 % ----------------------------------------------------------------------------------------------
-vertex_collision(C,T,L) :- position(R1,C,T,L), position(R2,C,T,L), R1!=R2.
-conflict(R,T,L) :- vertex_collision(C,T,L), position(R,C,T,L).
+vertex_collision(R,C,T,L) :- position(R,C,T,L), position(R',C,T,L), R!=R'.
+% only lowest priority robot waits
+not_lowest_priority(R',C,T,L) :- vertex_collision(R,C,T,L), vertex_collision(R',C,T,L), R>R'.
+wait(R,T,L) :- not not_lowest_priority(R,C,T,L), vertex_collision(R,C,T,L).
 
-%wait
-wait(R2,T,L) :- conflict(R1,T,L), conflict(R2,T,L), R1<R2.
-% only use first wait
+% only use first temporal wait
 not_first_wait(R,T',L) :- wait(R,T,L), wait(R,T',L), T<T'.
 first_wait(R,T,L) :- not not_first_wait(R,T,L), wait(R,T,L).
 % ----------------------------------------------------------------------------------------------
@@ -43,15 +42,17 @@ first_wait(R,T,L) :- not not_first_wait(R,T,L), wait(R,T,L).
 % ----------------------------------------------------------------------------------------------
 % reconstruct positions and incorporate waiting
 %before wait
-position(R,C,T,L+1) :- position(R,C,T,L), first_wait(R,T_WAIT,L), T<T_WAIT.
+position(R,C,T,L+1) :- position(R,C,T,L), first_wait(R,T_WAIT,L), T<T_WAIT, layer(L).
 %after wait
-position(R,C,T,L+1) :- position(R,C,T-1,L), first_wait(R,T_WAIT,L), T>=T_WAIT.
+position(R,C,T,L+1) :- position(R,C,T-1,L), first_wait(R,T_WAIT,L), T>=T_WAIT, layer(L).
 
 
 % copy positions into new layer for unaffected robots
-conflict(L) :- conflict(_R,_T,L).
 waited(R,L) :- first_wait(R,_T,L).
-position(R,C,T,L+1) :- position(R,C,T,L), conflict(L), not waited(R,L), layer(L).
+
+conflict(R,L) :- waited(R,L).
+conflict(L) :- waited(_R,L).
+position(R,C,T,L+1) :- position(R,C,T,L), conflict(L), not conflict(R,L), layer(L).
 % ----------------------------------------------------------------------------------------------
 
 
