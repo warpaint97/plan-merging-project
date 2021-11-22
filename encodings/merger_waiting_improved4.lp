@@ -5,11 +5,8 @@
 % CONSTANTS
 % ----------------------------------------------------------------------------------------------
 % to guarantee termination
-#const max_layers=15.
+#const max_layers=20.
 layer(0..max_layers-2).
-
-#const horizon=15.
-time(0..horizon).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -35,19 +32,12 @@ vertex_collision(C,T,L) :- position(R,C,T,L), position(R',C,T,L), R!=R'.
 not_first_vertex_collision(T,L) :- vertex_collision(C,T,L), vertex_collision(C',T',L), T>T'.
 first_vertex_collision(T,L) :- not not_first_vertex_collision(T,L), vertex_collision(C,T,L).
 
-edge_collision(L) :- edge_collision(_R,_R',_T,L).
 % all but highest priority robot wait unless already waited before
 wait(R,T,L) :- first_vertex_collision(T,L), position(R,C,T,L), position(R',C,T,L), R>R',
-               not wait(R,T,L-1), not edge_collision(L).
+               not wait(R,T,L-1).
 % highest priority robot will wait if other robot is already waiting before
 wait(R,T,L) :- first_vertex_collision(T,L), position(R,C,T,L), position(R',C,T,L), R!=R',
-               wait(R',T,L-1), not edge_collision(L).
-% ----------------------------------------------------------------------------------------------
-
-
-% EDGE COLLISION
-% ----------------------------------------------------------------------------------------------
-edge_collision(R,R',T,L) :- position(R,C,T-1,L), position(R,C',T,L), position(R',C',T-1,L), position(R',C,T,L), R!=R', C!=C'.
+               wait(R',T,L-1).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -59,19 +49,12 @@ position(R,C,T,L+1) :- position(R,C,T,L), wait(R,T_WAIT,L), T<T_WAIT, layer(L).
 %after wait
 position(R,C,T,L+1) :- position(R,C,T-1,L), wait(R,T_WAIT,L), T>=T_WAIT, layer(L).
 
-% reconstruct positions and incorporate plan switching
-%before edge collision
-position(R,C,T,L+1) :- position(R,C,T,L), edge_collision(R,_,T_SWITCH,L), T<T_SWITCH.
-%after edge collision
-position(R,C,T,L+1) :- position(R',C,T+1,L), edge_collision(R,R',T_SWITCH,L), T>=T_SWITCH.
-
 
 % copy positions into new layer for unaffected robots
 waited(R,L) :- wait(R,_T,L).
 
 conflict(R,L) :- waited(R,L).
-conflict(R,L) :- edge_collision(R,_R,_T,L).
-conflict(L) :- conflict(_,L).
+conflict(L) :- waited(_R,L).
 position(R,C,T,L+1) :- position(R,C,T,L), conflict(L), not conflict(R,L), layer(L).
 % ----------------------------------------------------------------------------------------------
 
