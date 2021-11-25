@@ -75,7 +75,7 @@ def clickOnGrid(event,add):
 				print('delete object')
 				tiles[y][x] = 'n'
 				display.delete(cell)
-		print(tiles)
+		#print(tiles)
                 
 def clickAdd(event):
 	clickOnGrid(event,True)

@@ -88,8 +88,7 @@ def count(tiles,o):
 
 def newTiles(n_cols, n_rows):
 	tiles = np.ones(shape=(n_rows,n_cols)).astype(str)
-	print('hello')
-	print(tiles)
+	#print(tiles)
 	for x in range(n_rows):
 		for y in range(n_cols):
 			tiles[x][y] = 'n'
