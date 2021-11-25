@@ -7,6 +7,7 @@ We aim to find a solution for intelligently merging plans of individual robots i
 ## Directory Structure
 - `benchmarks/` contains all of our  M-domain benchmark instances for the asprilo framework.
 - `encodings/` contains all of our encodings for the plan merger.
+- `benchmark_tool/` contains a tool to generate benchmark instances.
 
 ## Contact
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
