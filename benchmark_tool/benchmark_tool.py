@@ -18,7 +18,7 @@ def displayGrid(canvas, tiles):
 			tag = '{},{},'.format(col,row)
 			x0, y0, x1, y1 = col*grid_size,row*grid_size, (col+1)*grid_size,(row+1)*grid_size
 			#Nodes
-			canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n')
+			canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n', width=2)
 			#Shelves
 			#canvas.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=tag)
 			#Labels
@@ -27,6 +27,7 @@ def displayGrid(canvas, tiles):
 			#canvas.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = '#808', tags=tag)
 
 def newGrid():
+	print('new grid')
 	display.delete('all')
 	global tiles
 	tiles = newTiles(int(n_col_entry.get()),int(n_row_entry.get()))
@@ -102,6 +103,8 @@ def open_popup():
 	popup = Tk()
 	popup.title('Object ID')
 	popup.geometry('230x50')
+	popup.resizable(width=0, height=0)
+
 	text = 'Robot ID: ' if mode.get() == 'Robots' else 'Shelf ID: '
 	robot_id_label = Label(popup, text=text)
 	robot_id_entry = Entry(popup)
@@ -148,9 +151,10 @@ master.title('Benchmark Tool')
 width = 520
 height = 400
 master.geometry('%dx%d' % (width,height))
+master.resizable(width=0, height=0)
 
 #frame
-menu = Frame(master, width=width/2, height=height/2, bg='#ddd')
+menu = Frame(master, width=width/2, height=height/2)#, bg='#ddd')
 menu.pack(side=TOP)
 
 canvas_width = width=width*0.8
