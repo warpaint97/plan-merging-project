@@ -151,8 +151,8 @@ def addObject(ID, m):
 #main window
 master = Tk()
 master.title('Benchmark Tool')
-width = 520
-height = 500
+width = 500
+height = 520
 master.geometry('%dx%d' % (width,height))
 master.resizable(width=0, height=0)
 
