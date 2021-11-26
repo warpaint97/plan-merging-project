@@ -100,9 +100,10 @@ def open_popup():
 		
 	global popup
 	popup = Tk()
-	popup.title('ID')
-	popup.geometry('200x100')
-	robot_id_label = Label(popup, text='Object ID: ')
+	popup.title('Object ID')
+	popup.geometry('230x50')
+	text = 'Robot ID: ' if mode.get() == 'Robots' else 'Shelf ID: '
+	robot_id_label = Label(popup, text=text)
 	robot_id_entry = Entry(popup)
 	robot_id_button = Button(popup, text='Confirm', command=exit_popup)
 	robot_id_label.grid(row=0,column=0)
@@ -144,12 +145,12 @@ def addObject(ID, m):
 #main window
 master = Tk()
 master.title('Benchmark Tool')
-width = 500
+width = 520
 height = 400
 master.geometry('%dx%d' % (width,height))
 
 #frame
-menu = Frame(master, width=width/2, height=height/2, bg='#ccc')
+menu = Frame(master, width=width/2, height=height/2, bg='#ddd')
 menu.pack(side=TOP)
 
 canvas_width = width=width*0.8
@@ -167,16 +168,14 @@ n_row_label = Label(menu, text='Height: ')
 n_row_entry = Entry(menu)
 n_row_entry.insert(0, "3")
 n_col_entry = Entry(menu)
-n_col_entry.insert(0, "3")
+n_col_entry.insert(0, "4")
 create_button = Button(menu, text='Create', command=newGrid)
-quit_button = Button(menu, text='QUIT', command=quit)
 
-n_row_label.grid(row=0, column=2)
-n_col_label.grid(row=0, column=0)
-n_row_entry.grid(row=0, column=3)
-n_col_entry.grid(row=0, column=1)
+n_row_label.grid(row=0, column=2, sticky=E, padx=5, pady=5)
+n_col_label.grid(row=0, column=0, sticky=E, padx=5, pady=5)
+n_row_entry.grid(row=0, column=3, sticky=W, padx=5, pady=5)
+n_col_entry.grid(row=0, column=1, sticky=W, padx=5, pady=5)
 create_button.grid(row=0, column=4)
-quit_button.grid(row=0, column=5)
 
 #dropdown menu
 OptionList = [
