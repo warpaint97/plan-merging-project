@@ -6,6 +6,6 @@ An image of the editor:
 
 ![Editor](images/editor.PNG "Editor")
 
-The saved instance loaded into the vizualizer:
+The saved instance loaded into the asprilo vizualizer:
 
 ![Vizualizer](images/vizualizer.PNG "Vizualizer")
