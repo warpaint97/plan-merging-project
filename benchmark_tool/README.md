@@ -7,5 +7,5 @@ An image of the editor:
 
 The saved instance loaded into the vizualizer:
 ![Vizualizer](images/vizualizer.PNG "Vizualizer")
-![Example](images/example.PNG "Example")
+![Example](images/example.png "Example")
 
