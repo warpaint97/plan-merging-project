@@ -130,7 +130,7 @@ def addObject(ID, m):
 		print('add robot')
 		tiles[y][x] = 'r'+str(ID)
 		display.delete(selected_cell)
-		display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = '#808', tags=selected_cell, width=width)
+		display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d00','#ee0',float(ID)/5), tags=selected_cell, width=width)
 		name = 'R({})'.format(ID)
 		display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=selected_cell)
 		display.itemconfig(selected_cell+'n', fill='#ccc')
@@ -138,7 +138,7 @@ def addObject(ID, m):
 		#Shelves
 		tiles[y][x] = 's'+str(ID)
 		display.delete(selected_cell)
-		display.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=selected_cell, width=width)
+		display.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d0d','#0fd',float(ID)/5), tags=selected_cell, width=width)
 		name = 'S({})'.format(ID)
 		display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=selected_cell)
 		display.itemconfig(selected_cell+'n', fill='#ccc')

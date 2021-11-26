@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def saveInstance(tiles,dir):
 	x_size = tiles.shape[1]
@@ -93,3 +94,47 @@ def newTiles(n_cols, n_rows):
 		for y in range(n_cols):
 			tiles[x][y] = 'n'
 	return tiles
+
+def lerpColor(col1,col2,val):
+	val = val - int(val)
+	r1,g1,b1 = hex2dec(col1[1]),hex2dec(col1[2]),hex2dec(col1[3])
+	r2,g2,b2 = hex2dec(col2[1]),hex2dec(col2[2]),hex2dec(col2[3])
+	r3,g3,b3 = (1-val)*r1+val*r2, (1-val)*g1+val*g2, (1-val)*b1+val*b2
+	return '#'+dec2hex(int(r3))+dec2hex(int(g3))+dec2hex(int(b3))
+
+def hex2dec(val):
+	try:
+		if int(val) <= 9:
+			return int(val)
+	except:
+		if val == 'a':
+			return 10
+		elif val == 'b':
+			return 11
+		elif val == 'c':
+			return 12
+		elif val == 'd':
+			return 13
+		elif val == 'e':
+			return 14
+		elif val == 'f':
+			return 15
+
+def dec2hex(val):
+	if val <= 9:
+		return str(val)
+	if val == 10:
+		return 'a'
+	elif val == 11:
+		return 'b'
+	elif val == 12:
+		return 'c'
+	elif val == 13:
+		return 'd'
+	elif val == 14:
+		return 'e'
+	elif val == 15:
+		return 'f'
+
+def randomFloat(low, high):
+	return random.random()*(high-low) + low
