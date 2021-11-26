@@ -10,15 +10,17 @@ def displayGrid(canvas, tiles):
 	#fill grid only into full screen size for maximum dimension of grid to maintain perfect squares
 	global grid_size
 	global margin
+	global width
 	grid_size = canvas_width/n_cols if n_rows < n_cols else canvas_height/n_rows
+	grid_size -= 2*width
 	margin = grid_size/10
 
 	for col in range(n_cols):
 		for row in range(n_rows):
 			tag = '{},{},'.format(col,row)
-			x0, y0, x1, y1 = col*grid_size,row*grid_size, (col+1)*grid_size,(row+1)*grid_size
+			x0, y0, x1, y1 = col*grid_size+2*width,row*grid_size+2*width, (col+1)*grid_size+2*width,(row+1)*grid_size+2*width
 			#Nodes
-			canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n', width=2)
+			canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n', width=width)
 			#Shelves
 			#canvas.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=tag)
 			#Labels
@@ -118,16 +120,17 @@ def addObject(ID, m):
 	global tiles
 	global grid_size
 	global margin
+	global width
 	global selected_cell
 	cell_components = selected_cell.split(',')
 	x = int(cell_components[0])
 	y = int(cell_components[1])
-	x0, y0, x1, y1 = x*grid_size,y*grid_size, (x+1)*grid_size,(y+1)*grid_size
+	x0, y0, x1, y1 = x*grid_size+2*width,y*grid_size+2*width, (x+1)*grid_size+2*width,(y+1)*grid_size+2*width
 	if m == 'Robots':
 		print('add robot')
 		tiles[y][x] = 'r'+str(ID)
 		display.delete(selected_cell)
-		display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = '#808', tags=selected_cell)
+		display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = '#808', tags=selected_cell, width=width)
 		name = 'R({})'.format(ID)
 		display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=selected_cell)
 		display.itemconfig(selected_cell+'n', fill='#ccc')
@@ -135,7 +138,7 @@ def addObject(ID, m):
 		#Shelves
 		tiles[y][x] = 's'+str(ID)
 		display.delete(selected_cell)
-		display.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=selected_cell)
+		display.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=selected_cell, width=width)
 		name = 'S({})'.format(ID)
 		display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=selected_cell)
 		display.itemconfig(selected_cell+'n', fill='#ccc')
@@ -149,7 +152,7 @@ def addObject(ID, m):
 master = Tk()
 master.title('Benchmark Tool')
 width = 520
-height = 400
+height = 500
 master.geometry('%dx%d' % (width,height))
 master.resizable(width=0, height=0)
 
@@ -157,8 +160,8 @@ master.resizable(width=0, height=0)
 menu = Frame(master, width=width/2, height=height/2)#, bg='#ddd')
 menu.pack(side=TOP)
 
-canvas_width = width=width*0.8
-canvas_height = height=height*0.8
+canvas_width = width#*0.8
+canvas_height = height*0.8
 
 #canvas
 display = Canvas(master, width=canvas_width, height=canvas_height)
@@ -211,6 +214,7 @@ master.config(menu=menubar)
 tiles = []
 grid_size = 0
 margin = 0
+width = 2
 selected_cell = ''
 current_id = 0
 
