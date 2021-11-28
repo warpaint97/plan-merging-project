@@ -179,6 +179,7 @@ def open_popup():
 	popup.title('Object ID')
 	popup.geometry('230x50')
 	popup.resizable(width=0, height=0)
+	popup.iconbitmap('icons/id.ico')
 
 	text = 'Robot ID: ' if mode.get() == 'Robots' else 'Shelf ID: '
 	robot_id_label = Label(popup, text=text)
@@ -199,6 +200,7 @@ def open_warning():
 	warning.title('Warning')
 	warning.geometry('300x50')
 	warning.resizable(width=0, height=0)
+	warning.iconbitmap('icons/warning.ico')
 	warning_label = Label(warning,text='You must first select a robot with middle mouse click')
 	warning_label.pack()
 	########################################
@@ -296,6 +298,7 @@ width = 500
 height = 520
 master.geometry('%dx%d' % (width,height))
 master.resizable(width=0, height=0)
+master.iconbitmap('icons/present.ico')
 
 #frame
 menu = Frame(master, width=width/2, height=height/2)#, bg='#ddd')
