@@ -70,14 +70,41 @@ def saveInstance(tiles,dir):
 	print('saving instance...')
 	name = 'x{}_y{}_n{}_r{}_s{}_ps{}_pr{}_u{}_o{}_N001'.format(x_size,y_size,n_nodes,n_robots,n_shelves,0,n_products,n_pruduct_units,n_orders)
 	path = dir+'/'+name+'.lp'
-	f = open(path, "w")
-	f.write(output)
-	f.close()
-	print('Successfully saved into: '+path)
+	writeFile(path,output)
 
 
 def loadInstance():
 	print('loading instance...')
+
+
+def savePlans(plans,dir):
+	print('saving plans...')
+	output = ''
+	#read plans
+	for ID in plans.keys():
+		plan = ''
+		for t in range(1,len(plans[ID])):
+			prev_pos = plans[ID][t-1]
+			pos = plans[ID][t]
+			#calculate direction
+			dx, dy = pos[0]-prev_pos[0], pos[1]-prev_pos[1]
+			#occurs_(object(robot,1),action(move,(0,1)),1).
+			plan += 'occurs(object(robot,{}),action(move,({},{})),{}).\n'.format(ID,dx,dy,t)
+		#saving
+		path = dir+'/'+'plan_r'+str(ID)+'.lp'
+		writeFile(path,plan)
+		output += plan+'\n'
+
+	#saving
+	path = dir+'/'+'full_plan.lp'
+	writeFile(path,output)
+
+def writeFile(path,content):
+	f = open(path, "w")
+	f.write(content)
+	f.close()
+	print('Successfully saved into: '+path)
+
 
 def count(tiles,o):
 	counter = 0
@@ -86,6 +113,22 @@ def count(tiles,o):
 			if tiles[x][y][0] in o:
 				counter += 1
 	return counter
+
+def IDisUnique(tiles, ID, mode):
+	m = ''
+	if mode == 'Robots':
+		m = 'r'
+	elif mode == 'Shelves':
+		m = 's'
+
+	for x in range(tiles.shape[0]):
+		for y in range(tiles.shape[1]):
+			if tiles[x][y][0] == m:
+				other_ID = tiles[x][y][1:]
+				other_ID = 0 if other_ID == '' else int(other_ID)
+				if int(other_ID) == ID:
+					return False
+	return True
 
 def newTiles(n_cols, n_rows):
 	tiles = np.ones(shape=(n_rows,n_cols)).astype(str)
