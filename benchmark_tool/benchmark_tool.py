@@ -296,8 +296,11 @@ def unloadPlan(canvas):
 master = Tk()
 master.title('Benchmark Tool')
 width = 520
-height = 520
-master.geometry('%dx%d' % (width,height))
+height = 550
+if (platform.system() == 'Darwin'):
+    master.geometry('%dx%d' % (700,height))
+else:
+    master.geometry('%dx%d' % (width,height))
 #master.resizable(width=0, height=0)
 master.iconbitmap('icons/present.ico')
 
@@ -314,11 +317,12 @@ display.pack(side=BOTTOM)
 #bind an event when you click on the grid
 display.bind("<Button-1>", clickAdd)
 if (platform.system() == 'Darwin'):
-	display.bind("<Button-3>", clickSelectRobot)
-	display.bind("<Button-2>", clickRemove)
+    display.bind("<Double-Button-2>", clickSelectRobot)
+    display.bind("<Button-2>", clickRemove)
+    display.bind("<Button-3>", clickSelectRobot)
 else:
-	display.bind("<Button-2>", clickSelectRobot)
-	display.bind("<Button-3>", clickRemove)
+    display.bind("<Button-2>", clickSelectRobot)
+    display.bind("<Button-3>", clickRemove)
 
 n_col_label = Label(menu, text='Width: ')
 n_row_label = Label(menu, text='Height: ')
@@ -346,7 +350,10 @@ mode = StringVar(menu)
 mode.set(OptionList[0])
 
 mode_options = OptionMenu(menu, mode, *OptionList)
-info = Label(menu, text='LEFT MOUSE CLICK to add\nRIGHT MOUSE CLICK to remove\nMIDDLE MOUSE CLICK to select')
+if (platform.system() == 'Darwin'):
+    info = Label(menu, text='LMB to add\nRMB to remove\nMMB or double RMB to select')
+else:
+    info = Label(menu, text='LMB to add\nRMB to remove\nMMB to select')
 mode_options.grid(row=1,column=0)
 info.grid(row=1, column=1)
 
