@@ -199,10 +199,14 @@ def open_warning():
 	global warning
 	warning = Tk()
 	warning.title('Warning')
-	warning.geometry('300x50')
+	if (platform.system() == 'Darwin'):
+		warning.geometry('400x50')
+		warning_label = Label(warning,text='You must first select a robot with MMB or double RMB')
+	else:
+		warning.geometry('300x50')
+		warning_label = Label(warning,text='You must first select a robot with middle mouse click')
 	#warning.resizable(width=0, height=0)
 	warning.iconbitmap('icons/warning.ico')
-	warning_label = Label(warning,text='You must first select a robot with middle mouse click')
 	warning_label.pack()
 	########################################
 
