@@ -6,6 +6,11 @@ To open the tool, simply run the `python benchmark_tool.py` command or execute e
 
 The `output/` directory is the destination of all exported files.
 
+### Requirements:
+- python3.9 or greater
+- tkinter library
+- numpy library
+
 ## An image of the editor:
 
 ![Editor](images/instance_editor.PNG "Editor")
