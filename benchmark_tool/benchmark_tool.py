@@ -171,7 +171,7 @@ popup = 0
 def open_popup():
 	#pop up
 	########################################
-	def exit_popup():
+	def exit_popup(event=None):
 		addObject(int(robot_id_entry.get()),mode.get())
 		popup.destroy()
 		
@@ -190,6 +190,7 @@ def open_popup():
 	robot_id_label.grid(row=0,column=0)
 	robot_id_entry.grid(row=0,column=1)
 	robot_id_button.grid(row=1,column=0)
+	popup.bind("<Return>", exit_popup)
 	########################################
 
 hint = 0
