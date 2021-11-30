@@ -3,6 +3,7 @@ from tkinter import *
 from functionality import *
 import numpy as np
 import os, platform
+import tkFileDialog
 
 #functions
 def displayGrid(canvas, tiles):
@@ -155,17 +156,33 @@ def clickSelectRobot(event):
 def quit():
 	master.destroy()
 
+def choose_dir():
+	output_dir = tkFileDialog.askdirectory()
+	print('Selected Directory: %s' % str(output_dir))
+	return output_dir
+
 def save_instance():
 	global tiles
-	saveInstance(tiles, 'output')
+	saveInstance(tiles, choose_dir())
 
 def save_plans():
 	global plans
-	savePlans(plans, 'output')
+	savePlans(plans, choose_dir())
 
 def save_all():
-	save_instance()
-	save_plans()
+	output_dir = choose_dir()
+
+	instance_dir = '%s/instance' % str(output_dir)
+	if not os.path.exists(instance_dir):
+		os.makedirs(instance_dir)
+	global tiles
+	saveInstance(tiles, instance_dir)
+
+	plans_dir = '%s/plans' % str(output_dir)
+	if not os.path.exists(plans_dir):
+		os.makedirs(plans_dir)
+	global plans
+	savePlans(plans, plans_dir)
 
 popup = 0
 def open_popup():
