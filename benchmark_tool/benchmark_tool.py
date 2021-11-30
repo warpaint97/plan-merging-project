@@ -3,7 +3,7 @@ from tkinter import *
 from functionality import *
 import numpy as np
 import os, platform
-import tkFileDialog
+import tkinter.filedialog as fd
 
 #functions
 def displayGrid(canvas, tiles):
@@ -157,7 +157,7 @@ def quit():
 	master.destroy()
 
 def choose_dir():
-	output_dir = tkFileDialog.askdirectory()
+	output_dir = fd.askdirectory()
 	print('Selected Directory: %s' % str(output_dir))
 	return output_dir
 
