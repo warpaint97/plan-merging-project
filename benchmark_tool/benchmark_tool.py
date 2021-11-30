@@ -180,7 +180,8 @@ def open_popup():
 	popup.title('Object ID')
 	popup.geometry('230x60')
 	#popup.resizable(width=0, height=0)
-	popup.iconbitmap('icons/id.ico')
+	if platform.system() == 'Windows':
+		popup.iconbitmap('icons/id.ico')
 
 	text = 'Robot ID: ' if mode.get() == 'Robots' else 'Shelf ID: '
 	robot_id_label = Label(popup, text=text)
@@ -199,14 +200,11 @@ def open_warning():
 	global warning
 	warning = Tk()
 	warning.title('Warning')
-	if (platform.system() == 'Darwin'):
-		warning.geometry('400x50')
-		warning_label = Label(warning,text='You must first select a robot with MMB or double RMB')
-	else:
-		warning.geometry('300x50')
-		warning_label = Label(warning,text='You must first select a robot with middle mouse click')
+	warning.geometry('400x50')
+	warning_label = Label(warning,text='You must first select a robot with MMB or double RMB')
 	#warning.resizable(width=0, height=0)
-	warning.iconbitmap('icons/warning.ico')
+	if platform.system() == 'Windows':
+		warning.iconbitmap('icons/warning.ico')
 	warning_label.pack()
 	########################################
 
@@ -301,12 +299,13 @@ master = Tk()
 master.title('Benchmark Tool')
 width = 520
 height = 550
-if (platform.system() == 'Darwin'):
+if platform.system() == 'Darwin':
     master.geometry('%dx%d' % (700,height))
 else:
     master.geometry('%dx%d' % (width,height))
 #master.resizable(width=0, height=0)
-master.iconbitmap('icons/present.ico')
+if platform.system() == 'Windows':
+	master.iconbitmap('icons/present.ico')
 
 #frame
 menu = Frame(master, width=width/2, height=height/2)#, bg='#ddd')
@@ -320,13 +319,14 @@ display = Canvas(master, width=canvas_width, height=canvas_height)
 display.pack(side=BOTTOM)
 #bind an event when you click on the grid
 display.bind("<Button-1>", clickAdd)
-if (platform.system() == 'Darwin'):
-    display.bind("<Double-Button-2>", clickSelectRobot)
-    display.bind("<Button-2>", clickRemove)
-    display.bind("<Button-3>", clickSelectRobot)
+if platform.system() == 'Darwin':
+	display.bind("<Double-Button-2>", clickSelectRobot)
+	display.bind("<Button-2>", clickRemove)
+	display.bind("<Button-3>", clickSelectRobot)
 else:
-    display.bind("<Button-2>", clickSelectRobot)
-    display.bind("<Button-3>", clickRemove)
+	display.bind("<Button-2>", clickSelectRobot)
+	display.bind("<Button-3>", clickRemove)
+	display.bind("<Double-Button-3>", clickSelectRobot)
 
 n_col_label = Label(menu, text='Width: ')
 n_row_label = Label(menu, text='Height: ')
@@ -354,7 +354,7 @@ mode = StringVar(menu)
 mode.set(OptionList[0])
 
 mode_options = OptionMenu(menu, mode, *OptionList)
-if (platform.system() == 'Darwin'):
+if platform.system() == 'Darwin':
     info = Label(menu, text='LMB to add\nRMB to remove\nMMB or double RMB to select')
 else:
     info = Label(menu, text='LMB to add\nRMB to remove\nMMB to select')
