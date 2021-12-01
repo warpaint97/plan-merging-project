@@ -3,10 +3,17 @@ from tkinter import *
 from functionality import *
 import numpy as np
 import os, platform
-import tkinter.filedialog as fd
+from tkinter import filedialog as fd
 
 #functions
 def displayGrid(canvas, tiles):
+	print('create new grid')
+	display.delete('all')
+	global plans
+	global selected_robot_ID
+	plans.clear()
+	selected_robot_ID = 0
+
 	n_rows, n_cols = tiles.shape
 
 	#fill grid only into full screen size for maximum dimension of grid to maintain perfect squares
@@ -21,24 +28,29 @@ def displayGrid(canvas, tiles):
 		for row in range(n_rows):
 			tag = '{},{},'.format(col,row)
 			x0, y0, x1, y1 = col*grid_size+2*width,row*grid_size+2*width, (col+1)*grid_size+2*width,(row+1)*grid_size+2*width
-			#Nodes
-			canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n', width=width)
-			#Shelves
-			#canvas.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill='#800', tags=tag)
-			#Labels
-			#canvas.create_text(x0+grid_size/2,y0+grid_size/2, text="R(1)", fill='#000', tags=tag)
-			#Robots
-			#canvas.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = '#808', tags=tag)
+			o = tiles[row][col][0]
+			if o in ['n','r','s']:
+				#Nodes
+				canvas.create_rectangle(x0,y0,x1,y1, fill='#ccc', tags=tag+'n', width=width)
+			if o == 'e':
+				#Nodes
+				canvas.create_rectangle(x0,y0,x1,y1, fill='#333', tags=tag+'e', width=width)
+			if o == 'r':
+				#Robots
+				ID = int(tiles[row][col][1:])
+				display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d00','#ee0',float(ID)/5), tags=tag+'r', width=width)
+				name = 'R({})'.format(ID)
+				display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=tag+'r')
+			if o == 's':
+				#Shelves
+				ID = int(tiles[row][col][1:])
+				display.create_oval(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d0d','#0fd',float(ID)/5), tags=tag, width=width)
+				name = 'S({})'.format(ID)
+				display.create_text(x0+grid_size/2,y0+grid_size/2, text=name, fill='#000', tags=tag)
 
 def newGrid():
-	print('create new grid')
-	display.delete('all')
-	global plans
-	global selected_robot_ID
-	plans.clear()
-	selected_robot_ID = 0
 	global tiles
-	tiles = newTiles(int(n_col_entry.get()),int(n_row_entry.get()))
+	tiles = newTiles(int(n_col_entry.get()),int(n_row_entry.get()),'n')
 	displayGrid(display,tiles)
 
 def clickOnGrid(event,add,select):
@@ -161,6 +173,9 @@ def choose_dir():
 	print('Selected Directory: %s' % str(output_dir))
 	return output_dir
 
+def choose_file():
+	return fd.askopenfilename()
+
 def save_instance():
 	global tiles
 	saveInstance(tiles, choose_dir())
@@ -170,19 +185,39 @@ def save_plans():
 	savePlans(plans, choose_dir())
 
 def save_all():
-	output_dir = choose_dir()
+	output_dir = str(choose_dir())
 
-	instance_dir = '%s/instance' % str(output_dir)
+	instance_dir = '%s/instance' % output_dir
 	if not os.path.exists(instance_dir):
 		os.makedirs(instance_dir)
 	global tiles
 	saveInstance(tiles, instance_dir)
 
-	plans_dir = '%s/plans' % str(output_dir)
+	plans_dir = '%s/plans' % output_dir
 	if not os.path.exists(plans_dir):
 		os.makedirs(plans_dir)
 	global plans
 	savePlans(plans, plans_dir)
+
+def open_instance():
+	file_path = choose_file()
+	global tiles
+	tiles = loadInstance(file_path)
+	displayGrid(display,tiles)
+
+def load_plans():
+	file_path = choose_file()
+	global plans
+	global tiles
+	plans = loadPlans(file_path,tiles)
+
+def open_benchmark():
+	file_path = choose_file()
+	global plans
+	global tiles
+	tiles = loadInstance(file_path)
+	displayGrid(display,tiles)
+	plans = loadPlans(file_path,tiles)
 
 popup = 0
 def open_popup():
@@ -382,7 +417,9 @@ info.grid(row=1, column=1)
 #menubar
 menubar = Menu(master)
 filemenu = Menu(menubar)
-filemenu.add_command(label="Open", command=loadInstance)
+filemenu.add_command(label="Open Full Benchmark", command=open_benchmark)
+filemenu.add_command(label="Open Instance", command=open_instance)
+filemenu.add_command(label="Load Plans", command=load_plans)
 filemenu.add_command(label="Save All", command=save_all)
 filemenu.add_command(label="Save Instance", command=save_instance)
 filemenu.add_command(label="Save Plans", command=save_plans)

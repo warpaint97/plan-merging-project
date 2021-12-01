@@ -1,4 +1,5 @@
 import numpy as np
+import parse
 import random
 
 def saveInstance(tiles,dir):
@@ -73,8 +74,65 @@ def saveInstance(tiles,dir):
 	writeFile(path,output)
 
 
-def loadInstance():
+def loadInstance(path):
 	print('loading instance...')
+	content = readFile(path)
+	xs = []
+	ys = []
+	for line in content:
+		l = line.strip()
+		if '%' in l:
+			continue
+		if 'init' in l:
+			parsed = parse.parse('init(object({},{}),value({},({},{}))).', l)
+			if parsed[0] == 'node':
+				xs.append(int(parsed[3]))
+				ys.append(int(parsed[4]))
+
+	tiles = newTiles(max(xs),max(ys),'e')
+	for line in content:
+		l = line.strip()
+		if '%' in l:
+			continue
+		if 'init' in l:
+			parsed = parse.parse('init(object({},{}),value({},({},{}))).', l)
+			if parsed[2] == 'at':
+				name = parsed[0][0]+parsed[1] if parsed[0] != 'node' else parsed[0][0]
+				tiles[int(parsed[4])-1][int(parsed[3])-1] = name
+
+	return tiles
+
+def loadPlans(path,tiles):
+	print('loading plans...')
+	dplans = {}
+	plans = {}
+	content = readFile(path)
+	for line in content:
+		l = line.strip()
+		if '%' in l:
+			continue
+		if 'occurs' in l:
+			parsed = parse.parse('occurs(object(robot,{}),action(move,({},{})),{}).', l)
+			ID = int(parsed[0])
+			if not (ID in dplans):
+				dplans[ID] = []
+			dplans[ID].append([int(parsed[1]),int(parsed[2])])
+
+	for ID in dplans.keys():
+		plans[ID] = [getRobotPos(tiles,ID)]
+		for i in range(len(dplans[ID])):
+			x, y = plans[ID][i][0] + dplans[ID][i][0], plans[ID][i][1] + dplans[ID][i][1]
+			plans[ID].append([x,y])
+
+	return plans
+
+def getRobotPos(tiles,ID):
+	for y in range(tiles.shape[0]):
+		for x in range(tiles.shape[1]):
+			if tiles[y][x][0] == 'r':
+				if int(tiles[y][x][1:]) == ID:
+					return [x,y]
+	return 0
 
 
 def savePlans(plans,dir):
@@ -105,6 +163,12 @@ def writeFile(path,content):
 	f.close()
 	print('Successfully saved into: '+path)
 
+def readFile(path):
+	f = open(path, "r")
+	output = f.read()
+	f.close()
+	print('Successfully loaded from: '+path)
+	return output.split('\n')
 
 def count(tiles,o):
 	counter = 0
@@ -130,12 +194,12 @@ def IDisUnique(tiles, ID, mode):
 					return False
 	return True
 
-def newTiles(n_cols, n_rows):
+def newTiles(n_cols, n_rows, c):
 	tiles = np.ones(shape=(n_rows,n_cols)).astype(str)
 	#print(tiles)
 	for x in range(n_rows):
 		for y in range(n_cols):
-			tiles[x][y] = 'n'
+			tiles[x][y] = c
 	return tiles
 
 def lerpColor(col1,col2,val):
