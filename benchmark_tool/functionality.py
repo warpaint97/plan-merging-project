@@ -165,10 +165,10 @@ def writeFile(path,content):
 
 def readFile(path):
 	f = open(path, "r")
-	output = f.read()
+	output = f.readlines()
 	f.close()
 	print('Successfully loaded from: '+path)
-	return output.split('\n')
+	return output
 
 def count(tiles,o):
 	counter = 0

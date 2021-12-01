@@ -417,7 +417,7 @@ info.grid(row=1, column=1)
 #menubar
 menubar = Menu(master)
 filemenu = Menu(menubar)
-filemenu.add_command(label="Open Full Benchmark", command=open_benchmark)
+#filemenu.add_command(label="Open Full Benchmark", command=open_benchmark)
 filemenu.add_command(label="Open Instance", command=open_instance)
 filemenu.add_command(label="Load Plans", command=load_plans)
 filemenu.add_command(label="Save All", command=save_all)
