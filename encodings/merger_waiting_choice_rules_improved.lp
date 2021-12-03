@@ -14,7 +14,7 @@ wait(0..max_wait-2).
 % READING PLANS
 % ----------------------------------------------------------------------------------------------
 % reading renamed plans (occurs -> occurs_)
-move(robot(R),(DX,DY),T) :- occurs(object(robot,R),action(move,(DX,DY)),T).
+move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 %calculate original positions recursively
 position(R,(X+DX,Y+DY),T) :- move(R,(DX,DY),T), position(R,(X,Y),T-1).
@@ -54,4 +54,4 @@ horizon(T_max) :- T_max == #max{T : final_position(R,C,T,D)}.
 
 %show statements
 #show.
-#show occurs_(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
