@@ -1,0 +1,33 @@
+%reading instance
+#include "./input.lp".
+
+
+% read renamed plans (occurs -> occurs_)
+move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
+
+%calculate original positions recursively
+position(R,(X+DX,Y+DY),T,0) :- move(R,(DX,DY),T), position(R,(X,Y),T-1,0).
+
+%vertex collision
+vertex_collision(R1,C,T,L) :- position(R1,C,T,L), position(R2,C,T,L), R1<R2.
+
+%solange ein Robot in einen Konflikt verwickelt ist, wartet er
+position(R,C,T+1,L+1) :- vertex_collision(R,_,_,L), position(R,C,T,L).
+
+
+% determine the max conflict depth for each robot
+max_conflict_depth(R,MAX_D-1) :- MAX_D == #count{D : position(R,_C,_T,D)}, isRobot(R).
+
+
+% final plan
+final_position(R,C,T) :- position(R,C,T,D), max_conflict_depth(R,D).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
+
+
+% output plan
+#show.
+%#show vertex_collision/4.
+%#show position/4.
+#show init/2.
+#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+
