@@ -1,95 +1,63 @@
 % - plan merger encoding -----------------------------------------------------------------------
-% implementing a waiting statement for robots of lower priority in the case of a vertex conflict
-
-
+% Only store current depth of each robot in layer
 % CONSTANTS
 % ----------------------------------------------------------------------------------------------
 % to guarantee termination
-#const max_layers=15.
-layer(0..max_layers-2).
-
-#const horizon=15.
-time(0..horizon).
+#const max_wait=20.
+wait(0..max_wait-2).
 % ----------------------------------------------------------------------------------------------
-
-
 % READING INSTANCE
 % ----------------------------------------------------------------------------------------------
-#include "./input.lp".
+#include "./input_no_layers.lp".
 % ----------------------------------------------------------------------------------------------
-
-
 % READING PLANS
 % ----------------------------------------------------------------------------------------------
 % reading renamed plans (occurs -> occurs_)
 move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 %calculate original positions recursively
-position(R,(X+DX,Y+DY),T,0) :- move(R,(DX,DY),T), position(R,(X,Y),T-1,0).
+position(R,(X+DX,Y+DY),T) :- move(R,(DX,DY),T), position(R,(X,Y),T-1).
+
 % ----------------------------------------------------------------------------------------------
-
-
-% VERTEX COLLISION
+% CALCULATE FINAL POSITIONS INCLUDING WAITING
 % ----------------------------------------------------------------------------------------------
-vertex_collision(C,T,L) :- position(R,C,T,L), position(R',C,T,L), R!=R'.
-not_first_vertex_collision(T,L) :- vertex_collision(C,T,L), vertex_collision(C',T',L), T>T'.
-first_vertex_collision(T,L) :- not not_first_vertex_collision(T,L), vertex_collision(C,T,L).
+%first final position for recursion
+final_position(R,C,0,0) :- position(R,C,0), isRobot(R).
 
-edge_collision(L) :- edge_collision(_R,_R',_T,L).
-% all but highest priority robot wait unless already waited before
-wait(R,T,L) :- first_vertex_collision(T,L), position(R,C,T,L), position(R',C,T,L), R>R',
-               not wait(R,T,L-1), not edge_collision(L).
-% highest priority robot will wait if other robot is already waiting before
-wait(R,T,L) :- first_vertex_collision(T,L), position(R,C,T,L), position(R',C,T,L), R!=R',
-               wait(R',T,L-1), not edge_collision(L).
+% Create final positions recursively. Either wait at the same position or take the next step in plan
+{final_position(R,C,T+1,D+1)} :- final_position(R,C,T,D), wait(D).
+final_position(R,C',T+1,D) :- position(R,C',T-D), not final_position(R,C,T+1,D+1), final_position(R,C,T,D).
+
 % ----------------------------------------------------------------------------------------------
-
-
-% EDGE COLLISION
+% INTEGRITY CONSTRAINTS
 % ----------------------------------------------------------------------------------------------
-edge_collision(R,R',T,L) :- position(R,C,T-1,L), position(R,C',T,L), position(R',C',T-1,L), position(R',C,T,L), R!=R', C!=C'.
+%vertex collission
+:- final_position(R,C,T,D), final_position(R',C,T,D'), R!=R'.
+
+%find last time step per robot.
+max_time(T_MAX,R):- T_MAX == #max{T : final_position(R,C,T,D)}, isRobot(R).
+%collision with a robot waiting at the shelf
+:- final_position(R,C,T_MAX,D), final_position(R',C,T',D'), R!=R', T'>=T_MAX, max_time(T_MAX,R).
+
+%deviation from plan
+:- final_position(R,C,T,D), not position(R,C,_).
+
+%one robot can't be at different cells at the same time
+:- final_position(R,C,T,D), final_position(R,C',T,D'), C!=C'.
+
 % ----------------------------------------------------------------------------------------------
-
-
-% CONFLICT RESOLUTION
+% OPTIMIZATION
 % ----------------------------------------------------------------------------------------------
-% reconstruct positions and incorporate waiting
-%before wait
-position(R,C,T,L+1) :- position(R,C,T,L), wait(R,T_WAIT,L), T<T_WAIT, layer(L).
-%after wait
-position(R,C,T,L+1) :- position(R,C,T-1,L), wait(R,T_WAIT,L), T>=T_WAIT, layer(L).
+horizon(T_max) :- T_max == #max{T : final_position(R,C,T,D)}.
 
-% reconstruct positions and incorporate plan switching
-%before edge collision
-position(R,C,T,L+1) :- position(R,C,T,L), edge_collision(R,_,T_SWITCH,L), T<T_SWITCH.
-%after edge collision
-position(R,C,T,L+1) :- position(R',C,T+1,L), edge_collision(R,R',T_SWITCH,L), T>=T_SWITCH.
+#minimize{T@1 : horizon(T)}. 
 
-
-% copy positions into new layer for unaffected robots
-waited(R,L) :- wait(R,_T,L).
-
-conflict(R,L) :- waited(R,L).
-conflict(R,L) :- edge_collision(R,_R,_T,L).
-conflict(L) :- conflict(_,L).
-position(R,C,T,L+1) :- position(R,C,T,L), conflict(L), not conflict(R,L), layer(L).
 % ----------------------------------------------------------------------------------------------
-
-
-% FINALIZING PLANS
+% OUTPUT
 % ----------------------------------------------------------------------------------------------
-% determine the top layer
-top_layer(L_TOP-1) :- L_TOP == #count{L : position(robot(1),_C,_T,L)}.
+%reconstruct final moves for output.
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,D), final_position(R,(C2X,C2Y),T+1,D').
 
-% final plan
-final_position(R,C,T) :- position(R,C,T,L), top_layer(L).
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
-% ----------------------------------------------------------------------------------------------
-
-
-% OUTPUT PLAN
-% ----------------------------------------------------------------------------------------------
+%show statements
 #show.
-#show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
-% ----------------------------------------------------------------------------------------------
