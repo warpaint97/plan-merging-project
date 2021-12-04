@@ -1,3 +1,3 @@
 # Benchmark 13
 
-![Benchmark13](instance/x4_y4_n10_r3_s3_ps0_pr3_u3_o3_N001.png "Benchmark13")
+![Benchmark13](instance/x20_y10_n141_r10_s10_ps0_pr10_u10_o10_N001.png "Benchmark13")
