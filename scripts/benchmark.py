@@ -51,5 +51,5 @@ if __name__ == "__main__":
         SaveFile(output, optimal_model)
     
         #open visualizer
-        cmd = "cat {} | viz".format(output)
+        cmd = "viz -t {}".format(output)
         os.system(cmd)
