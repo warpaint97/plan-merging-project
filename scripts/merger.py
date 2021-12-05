@@ -15,7 +15,7 @@ output = "../output.txt"
 if __name__ == "__main__":
     #run clingo
     clg = Clingo()
-    s, t = clg.isolve([plans,instance,merger],merger,"max_waits",lambda x: 5*(x+1), 10)
+    s, t = clg.isolve([plans,instance,merger],merger,"max_waits",lambda x: 10*(x+1), 10)
     
     #save model into output.txt
     if len(clg.models) != 0:

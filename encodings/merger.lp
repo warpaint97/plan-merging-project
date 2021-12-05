@@ -90,3 +90,13 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 
 
 
+
+
+
+
+
+
+
+
+
+
