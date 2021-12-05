@@ -2,7 +2,7 @@
 % implementing a plan switching method for robots of which are involved in an edge collision conflict
 
 %reading instance
-#include "./input.lp".
+#include "./input_layers.lp".
 
 
 % read renamed plans (occurs -> occurs_)

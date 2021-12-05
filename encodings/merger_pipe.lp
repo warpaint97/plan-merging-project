@@ -1,5 +1,5 @@
 %reading instance
-#include "./input.lp".
+#include "./input_layers.lp".
 
 
 % read renamed plans (occurs -> occurs_)
