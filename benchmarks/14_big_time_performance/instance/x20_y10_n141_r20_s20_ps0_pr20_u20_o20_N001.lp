@@ -4,11 +4,11 @@
 % Number of Nodes:                  141
 % Number of Highway Nodes:          0
 % Number of Robots:                 20
-% Number of Shelves:                19
+% Number of Shelves:                20
 % Number of Picking Stations:       0
-% Number of Products:               19
-% Number of Product Units in Total: 19
-% Number of Orders:                 19
+% Number of Products:               20
+% Number of Product Units in Total: 20
+% Number of Orders:                 20
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #program base.
@@ -192,6 +192,7 @@ init(object(shelf,10),value(at,(10,2))).
 init(object(shelf,19),value(at,(12,2))).
 init(object(shelf,18),value(at,(8,3))).
 init(object(shelf,12),value(at,(12,3))).
+init(object(shelf,7),value(at,(14,5))).
 init(object(shelf,5),value(at,(14,6))).
 init(object(shelf,11),value(at,(10,7))).
 init(object(shelf,20),value(at,(13,9))).
@@ -221,6 +222,7 @@ init(object(product,16),value(on,(16,1))).
 init(object(product,17),value(on,(17,1))).
 init(object(product,18),value(on,(18,1))).
 init(object(product,19),value(on,(19,1))).
+init(object(product,20),value(on,(20,1))).
 
 % orders
 init(object(order,1),value(line,(1,1))).
@@ -242,3 +244,4 @@ init(object(order,16),value(line,(16,1))).
 init(object(order,17),value(line,(17,1))).
 init(object(order,18),value(line,(18,1))).
 init(object(order,19),value(line,(19,1))).
+init(object(order,20),value(line,(20,1))).
