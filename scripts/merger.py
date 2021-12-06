@@ -1,26 +1,27 @@
-import os
 from iclingo import Clingo
-import files
+import funcs
 
-__author__ = "Aaron Bishop"
-
-#paths
+# ENTER PATHS (with cwd ./plan-merging-project)
+#################################################################################
 merger = "encodings/merger.lp"
-benchmark = "benchmarks/13_time_performance"
-plans = os.path.join(benchmark,"plans/full_plan.lp")
-instance = os.path.join(benchmark,"instance/x20_y10_n141_r10_s10_ps0_pr10_u10_o10_N001.lp")
-output = "../output.txt"
+benchmark_id = 13
+#################################################################################
 
-#main program
+# main program
 if __name__ == "__main__":
-    #run clingo
+    # init
+    benchmarks = funcs.getAllBenchmarks()
+    bm_program = funcs.getBenchmarkProgram(benchmarks[benchmark_id - 1],"occurs_")
     clg = Clingo()
-    s, t = clg.isolve([plans,instance,merger],merger,"max_waits",lambda x: 10*(x+1), 10)
-    
-    #save model into output.txt
-    if len(clg.models) != 0:
-        files.WriteFile(output, clg.get_optimal_model())
-    
-        #open visualizer
-        cmd = "viz -t {}".format(output)
-        os.system(cmd)
+
+    # WRITE YOUR CODE HERE
+    #################################################################################
+    # run clingo
+    #s, t = clg.solve(bm_program, merger)
+
+    # run clingo incrementally
+    s, t = clg.isolve(bm_program, merger, "max_waits", lambda x: 10*(x+1), 10)
+
+    # load model into vizalizer
+    clg.load_viz()
+    #################################################################################
