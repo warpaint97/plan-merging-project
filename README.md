@@ -9,7 +9,7 @@ We aim to find a solution for intelligently merging plans of individual robots i
 - `encodings/` contains all of our encodings for the plan merger.
 - `benchmark_tool/` contains our tool to generate benchmarks for the M-domain.
 
-## Contact
+## Contributors
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
 - Anton Rabe: anton.rabe@uni-potsdam.de
 - Louis Donath: lodonath@uni-potsdam.de
