@@ -3,8 +3,7 @@
 % CONSTANTS
 % ----------------------------------------------------------------------------------------------
 % to guarantee termination
-#const max_wait=20.
-wait(0..max_wait-2).
+#const max_waits=20.
 % ----------------------------------------------------------------------------------------------
 % READING INSTANCE
 % ----------------------------------------------------------------------------------------------
@@ -25,7 +24,7 @@ position(R,(X+DX,Y+DY),T) :- move(R,(DX,DY),T), position(R,(X,Y),T-1).
 final_position(R,C,0,0) :- position(R,C,0), isRobot(R).
 
 % Create final positions recursively. Either wait at the same position or take the next step in plan
-{final_position(R,C,T+1,D+1)} :- final_position(R,C,T,D), wait(D).
+{final_position(R,C,T+1,D+1)} :- final_position(R,C,T,D), D<max_waits.
 final_position(R,C',T+1,D) :- position(R,C',T-D), not final_position(R,C,T+1,D+1), final_position(R,C,T,D).
 
 %find last time step per robot.

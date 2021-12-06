@@ -31,8 +31,9 @@ position(R,(X+DX,Y+DY),T) :- move(R,(DX,DY),T), position(R,(X,Y),T-1).
 final_position(R,C,0,0) :- position(R,C,0), isRobot(R).
 
 % create final positions recursively
-% either wait at the same position or take the next step in plan
-{final_position(R,C,T+1,N+1)} :- final_position(R,C,T,N), N<max_waits.
+% either wait at the same position
+{final_position(R,C,T+1,N+1)} :- final_position(R,C,T,N), position(R,C',T-N+1), N<max_waits.
+% or take the next step in plan
 final_position(R,C',T+1,N) :- position(R,C',T-N+1), not final_position(R,C,T+1,N+1), final_position(R,C,T,N).
 % ----------------------------------------------------------------------------------------------
 
@@ -42,21 +43,21 @@ final_position(R,C',T+1,N) :- position(R,C',T-N+1), not final_position(R,C,T+1,N
 % vertex collision
 :- final_position(R,C,T,N), final_position(R',C,T,N'), R!=R'.
 
-% edge collision
-:- final_position(R,C,T,_), final_position(R,C',T+1,_), 
-   final_position(R',C',T,_), final_position(R',C,T+1,_), 
-   R!=R', C!=C'.
-
 % find last time step per robot.
 max_time(R,T_MAX):- T_MAX == #max{T : final_position(R,C,T,N)}, isRobot(R).
 
 % collision with a robot waiting at the shelf
 :- final_position(R,C,T_MAX,N), final_position(R',C,T',N'), R!=R', T'>=T_MAX, max_time(R,T_MAX).
+% ----------------------------------------------------------------------------------------------
 
-% not all robots can wait at the same time
-someone_moved(T+1) :- final_position(R,C,T,N), final_position(R,C',T+1,N).
-time(1..T_MAX) :- horizon(T_MAX).
-:- not someone_moved(T), time(T).
+
+% REDUNDANT CONSTRAINTS FOR PERFORMANCE
+% ----------------------------------------------------------------------------------------------
+% deviation from plan
+:- final_position(R,C,T,N), not position(R,C,_).
+
+% one robot can't be at different cells at the same time
+:- final_position(R,C,T,N), final_position(R,C',T,N'), C!=C'.
 % ----------------------------------------------------------------------------------------------
 
 
@@ -65,6 +66,7 @@ time(1..T_MAX) :- horizon(T_MAX).
 horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,N)}.
 
 #minimize{T@1 : horizon(T)}.
+#minimize{T@2 : max_time(R,T)}.
 % ----------------------------------------------------------------------------------------------
 
 
@@ -77,47 +79,3 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 #show.
 #show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

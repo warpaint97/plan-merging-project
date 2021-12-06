@@ -4,7 +4,7 @@ import funcs
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
 merger = "encodings/merger.lp"
-benchmark_id = 13
+benchmark_id = 14
 #################################################################################
 
 # main program
