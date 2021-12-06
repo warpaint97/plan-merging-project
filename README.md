@@ -15,4 +15,5 @@ We aim to find a solution for intelligently merging plans of individual robots i
 - Louis Donath: lodonath@uni-potsdam.de
 
 ## Literature
-...
+- [clingo Guide](http://wp.doc.ic.ac.uk/arusso/wp-content/uploads/sites/47/2015/01/clingo_guide.pdf)
+- [clingo Python API](https://potassco.org/clingo/python-api/5.4/)
