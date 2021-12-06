@@ -39,10 +39,10 @@ final_position(R,C',T+1,N) :- position(R,C',T-N+1), not final_position(R,C,T+1,N
 
 % INTEGRITY CONSTRAINTS
 % ----------------------------------------------------------------------------------------------
-% vertex collission
+% vertex collision
 :- final_position(R,C,T,N), final_position(R',C,T,N'), R!=R'.
 
-% edge collission
+% edge collision
 :- final_position(R,C,T,_), final_position(R,C',T+1,_), 
    final_position(R',C',T,_), final_position(R',C,T+1,_), 
    R!=R', C!=C'.
@@ -52,6 +52,11 @@ max_time(R,T_MAX):- T_MAX == #max{T : final_position(R,C,T,N)}, isRobot(R).
 
 % collision with a robot waiting at the shelf
 :- final_position(R,C,T_MAX,N), final_position(R',C,T',N'), R!=R', T'>=T_MAX, max_time(R,T_MAX).
+
+% not all robots can wait at the same time
+someone_moved(T+1) :- final_position(R,C,T,N), final_position(R,C',T+1,N).
+time(1..T_MAX) :- horizon(T_MAX).
+:- not someone_moved(T), time(T).
 % ----------------------------------------------------------------------------------------------
 
 
