@@ -66,6 +66,7 @@ time(1..T_MAX) :- horizon(T_MAX).
 horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,N)}.
 
 #minimize{T@1 : horizon(T)}.
+#minimize{T@2 : max_time(R,T)}.
 % ----------------------------------------------------------------------------------------------
 
 
@@ -78,6 +79,7 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 #show.
 #show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+<<<<<<< HEAD
 
 
 
@@ -101,3 +103,5 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 
 
 
+=======
+>>>>>>> a64163edb573f7eb8d4885bec9b3941b9dc5489a
