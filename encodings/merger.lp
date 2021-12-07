@@ -21,7 +21,7 @@
 move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 % calculate original positions recursively
-position(R,(X+DX,Y+DY),T) :- move(R,(DX,DY),T), position(R,(X,Y),T-1).
+position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T-1), position(R,(X,Y),T-1).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -72,7 +72,7 @@ horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,N)}.
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
 % reconstruct final moves for output.
-final_move(R,(C2X-C1X,C2Y-C1Y),T+1) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
 
 % show statements
 #show.

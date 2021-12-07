@@ -124,7 +124,7 @@ def clickOnGrid(event,add,select):
 				#add Plan Tile
 				display.delete(cell+'p')
 				display.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d88','#ee8',float(selected_robot_ID)/5), tags=cell+'p', width=width)
-				text = 'T={}'.format(len(plans[selected_robot_ID]))
+				text = 'T={}'.format(len(plans[selected_robot_ID])-1)
 				display.create_text(x0+grid_size/2,y0+grid_size/2, text=text, fill='#000', tags=cell+'p')
 				print('add plan node')
 		else:
@@ -326,7 +326,7 @@ def loadPlan(canvas,ID):
 			x0, y0, x1, y1 = x*grid_size,y*grid_size, (x+1)*grid_size,(y+1)*grid_size
 			cell = '{},{},'.format(x,y)
 			canvas.create_rectangle(x0+margin,y0+margin,x1-margin,y1-margin, fill = lerpColor('#d88','#ee8',float(selected_robot_ID)/5), tags=cell+'p', width=width)
-			text = 'T={}'.format(i+1)
+			text = 'T={}'.format(i)
 			canvas.create_text(x0+grid_size/2,y0+grid_size/2, text=text, fill='#000', tags=cell+'p')
 
 def unloadPlan(canvas):
