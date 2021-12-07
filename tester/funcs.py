@@ -7,8 +7,8 @@ def getBenchmarkFiles(bm_dir,ext=".lp"):
     return instance + plans
 
 
-def getBenchmarkProgram(bm_dir,new_occurs="occurs_"):
-        return "".join([ReadFile(file).replace("occurs",new_occurs) for file in getBenchmarkFiles(bm_dir)])
+def getBenchmarkProgram(bm_dir):
+        return "".join([ReadFile(file) for file in getBenchmarkFiles(bm_dir)])
 
 
 def getAllBenchmarks(directory="benchmarks"):

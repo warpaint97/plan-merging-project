@@ -147,7 +147,7 @@ def savePlans(plans,dir):
 			#calculate direction
 			dx, dy = pos[0]-prev_pos[0], pos[1]-prev_pos[1]
 			#occurs_(object(robot,1),action(move,(0,1)),1).
-			plan += 'occurs(object(robot,{}),action(move,({},{})),{}).\n'.format(ID,dx,dy,t)
+			plan += 'occurs(object(robot,{}),action(move,({},{})),{}).\n'.format(ID,dx,dy,t-1)
 		#saving
 		path = dir+'/'+'plan_r'+str(ID)+'.lp'
 		writeFile(path,plan)

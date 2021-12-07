@@ -29,8 +29,8 @@ class Clingo:
         print("Satisfiable") if sr.satisfiable else print("Unsatisfiable")
         print("Execution time: {} sec".format(elapsed_time))
 
-        #return satisfiability and elapsed time
-        return sr.satisfiable, elapsed_time
+        #return model, satisfiability and elapsed time
+        return self.get_optimal_model(), sr.satisfiable, elapsed_time
 
 
     def isolve(self, files, merger, c_name, f, max_iter):
@@ -41,13 +41,13 @@ class Clingo:
             c = f(i)
             print("Iteration {} with {}={}".format(i+1,c_name,c))
             self.set_constant(merger, c_name, c)
-            s, t = self.solve(files, merger)
+            m, s, t = self.solve(files, merger)
             #stop if satisfiable
             if s:
                 print("\nTotal execution time: {} sec\n".format(time.perf_counter()-start))
-                return s, t
+                return m, s, t
         #no model found
-        return 0
+        return "", None, 0
     
 
     def set_constant(self, file, name, value):
@@ -61,13 +61,15 @@ class Clingo:
 
 
     def get_optimal_model(self):
-        return self.models[-1].replace(" ",". ")+"."
-
-    def load_viz(self, output="../output.txt"):
-        #save model into output.txt
         if len(self.models) != 0:
-            WriteFile(output, self.get_optimal_model())
-    
-            #open visualizer
-            cmd = "viz -t {}".format(output)
-            os.system(cmd)
+            return self.models[-1].replace(" ",". ")+"."
+        else:
+            return None
+
+
+    def load_viz(self, model, output="../output.txt"):
+        #save model into output.txt
+        WriteFile(output, model)
+        #open visualizer
+        cmd = "viz -t {}".format(output)
+        os.system(cmd)
