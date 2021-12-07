@@ -21,7 +21,7 @@
 move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 % calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T-1), position(R,(X,Y),T-1).
+position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -78,6 +78,8 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 #show.
 #show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+
+
 
 
 

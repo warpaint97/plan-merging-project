@@ -6,7 +6,7 @@
 move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 %calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1,0) :- move(R,(DX,DY),T-1), position(R,(X,Y),T-1,0).
+position(R,(X+DX,Y+DY),T+1,0) :- move(R,(DX,DY),T), position(R,(X,Y),T,0).
 
 %vertex collision
 vertex_collision(R1,C,T,L) :- position(R1,C,T,L), position(R2,C,T,L), R1<R2.

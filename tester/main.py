@@ -17,15 +17,15 @@ if __name__ == "__main__":
     # WRITE YOUR CODE HERE
     #################################################################################
     # run clingo
-    #m, s, t = clg.solve(bm_program, merger)
+    m, s, t = clg.solve(bm_program, merger)
 
     # run clingo incrementally
-    m, s, t = clg.isolve(bm_program, merger, "max_waits", lambda x: 10*(x+1), 10)
+    #m, s, t = clg.isolve(bm_program, merger, "max_waits", lambda x: 10*(x+1), 10)
     clg.load_viz(m)
 
-    m = m.replace("occurs","occurs_")
-    m, s, t = clg.isolve(m, merger, "max_waits", lambda x: 10*(x+1), 10)
+    #m = m.replace("occurs","occurs_")
+    #m, s, t = clg.isolve(m, merger, "max_waits", lambda x: 10*(x+1), 10)
 
     # load model into vizalizer
-    clg.load_viz(m)
+    #clg.load_viz(m)
     #################################################################################
