@@ -12,4 +12,4 @@ def getBenchmarkProgram(bm_dir):
 
 
 def getAllBenchmarks(directory="benchmarks"):
-    return glob.glob("{}/*/".format(directory))
+    return sorted(glob.glob("{}/*/".format(directory)))
