@@ -66,7 +66,7 @@ final_position(R,C',T+1,R'',D+1) :- switch(R',R'',N,D), position(R'',C',D+1), fi
 % Exclusive switching
 %:- switch(R,R'),switch(R,R''), R'!=R''.
 
-%edge colision
+%edge colision leads to additional movement for some reason
 %:-final_position(R,C,T,B,D), final_position(R,C',T+1,B',D'), final_position(R',C',T,B'',D''), final_position(R',C,T+1,B''',D''').
 % ----------------------------------------------------------------------------------------------
 
@@ -74,7 +74,10 @@ final_position(R,C',T+1,R'',D+1) :- switch(R',R'',N,D), position(R'',C',D+1), fi
 % OPTIMIZATION
 % ----------------------------------------------------------------------------------------------
 save_steps(T_later-T,R):- switch(R,R',T,T'_later), switch(R',R,T',T_later).
-#maximize{X,R : save_steps(X,R)}.
+#maximize{X@1,R : save_steps(X,R)}.
+
+horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
+#minimize{T@2 : horizon(T)}.
 % ----------------------------------------------------------------------------------------------
 
 
@@ -87,4 +90,4 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y), final_po
 #show.
 %#show switch/4.
 %#show final_position/5.
-#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show occurs_(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
