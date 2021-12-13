@@ -1,5 +1,5 @@
 % - plan merger encoding -----------------------------------------------------------------------
-% allow robots to wait or follow plan using choice rules and count the number of waits
+% Lets two robots switch goals, use as preprocessing
 
 
 % CONSTANTS
@@ -44,8 +44,8 @@ switch(R,R',T,T'):- switch(R',R), earliest_intersect(R,R',C,T), position(R',C,T'
 
 
 % create final positions recursively
-final_position(R,C',T+1,R',N+1) :- position(R',C',N+1), final_position(R,C,T,R',N).%, not switch(R',_,N,_).
-%final_position(R,C',T+1,R'',D+1) :- switch(R',R'',N,D), position(R'',C',D+1), final_position(R,C,T,R',N).
+final_position(R,C',T+1,R',N+1) :- position(R',C',N+1), final_position(R,C,T,R',N), not switch(R',_,N,_).
+final_position(R,C',T+1,R'',D+1) :- switch(R',R'',N,D), position(R'',C',D+1), final_position(R,C,T,R',N).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -76,5 +76,4 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y), final_po
 
 % show statements
 #show.
-#show position/3.
-%#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show occurs_(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
