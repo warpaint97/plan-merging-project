@@ -9,10 +9,10 @@
 
 % READING PLANS
 % ----------------------------------------------------------------------------------------------
-% reading renamed plans (occurs -> occurs_)
+% reading plans
 move(robot(R),(DX,DY),T) :- occurs(object(robot,R),action(move,(DX,DY)),T).
 
-%calculate original positions recursively
+% calculate original positions recursively
 position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
 % ----------------------------------------------------------------------------------------------
 
