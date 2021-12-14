@@ -74,8 +74,9 @@ horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,N)}.
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
 % reconstruct final moves for output.
-final_move(R,(C2X-C1X,C2Y-C1Y),T+1) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
 
 % show statements
 #show.
+#show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).

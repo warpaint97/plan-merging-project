@@ -90,4 +90,5 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y), final_po
 #show.
 %#show switch/4.
 %#show final_position/5.
-#show occurs_(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show init/2.
+#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
