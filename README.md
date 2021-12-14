@@ -8,6 +8,7 @@ We aim to find a solution for intelligently merging plans of individual robots i
 - `benchmarks/` contains all of our  M-domain benchmark instances for the asprilo framework.
 - `encodings/` contains all of our encodings for the plan merger.
 - `benchmark_tool/` contains our tool to generate benchmarks for the M-domain.
+- `tester/` contains python scripts which help in testing our merger encodings on a given benchmark.
 
 ## Contributors
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
