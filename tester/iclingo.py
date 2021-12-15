@@ -33,7 +33,8 @@ class Clingo:
         return self.get_optimal_model(), sr.satisfiable, elapsed_time
 
 
-    def isolve(self, files, merger, c_name, f, max_iter):
+    def isolve(self, files, merger, c_name, f, max_iter, finish=False):
+        m, s, t, ts = "", None, 0, []
         start = time.perf_counter()
         #iterate max_iter times
         for i in range(max_iter):
@@ -42,12 +43,16 @@ class Clingo:
             print("Iteration {} with {}={}".format(i+1,c_name,c))
             self.set_constant(merger, c_name, c)
             m, s, t = self.solve(files, merger)
+            ts.append(t)
             #stop if satisfiable
-            if s:
+            if s and not finish:
                 print("\nTotal execution time: {} sec\n".format(time.perf_counter()-start))
-                return m, s, t
+                return m, s, t, ts
         #no model found
-        return "", None, 0
+        if s:
+            return m, s, t, ts
+        else:
+            return "", None, 0, []
     
 
     def set_constant(self, file, name, value):
