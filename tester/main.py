@@ -19,21 +19,21 @@ if __name__ == "__main__":
     # WRITE YOUR CODE HERE
     #################################################################################
     # run clingo
-    #m, s, t = clg.solve(bm_program, merger)
+    m, s, t = clg.solve(bm_program, merger)
 
-    #m = m.replace("occurs","occurs_")
-    #m, s, t = clg.solve(m, "encodings/merger_waiting_choice_rules_improved3.lp")
+    m = m.replace("occurs","occurs_")
+    m, s, t = clg.solve(m, "encodings/merger_waiting_choice_rules_improved3.lp")
 
-    #m = m.replace("occurs","occurs_")
-    #m, s, t = clg.solve(m, "encodings/merger_plan_switching+wait.lp")
+    m = m.replace("occurs","occurs_")
+    m, s, t = clg.solve(m, "encodings/merger_plan_switching+wait.lp")
 
-    #m, s, t = clg.solve(m, "encodings/validity_checker.lp")
+    m, s, t = clg.solve(m, "encodings/validity_checker.lp")
 
     # run clingo incrementally
     #m = m.replace("occurs","occurs_")
-    m, s, t, ts = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 1*(x+1), 50, True)
-    plt.plot(list(range(len(ts))),ts)
-    plt.show()
+    #m, s, t, ts = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 1*(x+1), 50, True)
+    #plt.plot(list(range(len(ts))),ts)
+    #plt.show()
 
     # load model into vizalizer
     clg.load_viz(m)
