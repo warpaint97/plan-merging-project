@@ -81,7 +81,7 @@ def clickOnGrid(event,add,select):
 				loadPlan(display,selected_robot_ID)
 				display.itemconfig(cell+'n', fill='#dd0')
 				global hint
-				hint = Label(menu, text='IMPORTANT:\nStart the plan with T=1\nat the robots position!')
+				hint = Label(menu, text='IMPORTANT:\nStart the plan with T=0\nat the robots position!')
 				hint.grid(row=1,column=3)
 			else:
 				unloadPlan(display)
