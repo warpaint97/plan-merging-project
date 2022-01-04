@@ -5,7 +5,7 @@ import numpy as np
 
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
-merger = "encodings/GUM.lp"
+merger = "encodings/GUM_simple.lp"
 benchmark_id = 19
 #################################################################################
 
