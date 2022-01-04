@@ -26,7 +26,7 @@ position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
 % CALCULATE FINAL POSITIONS INCLUDING WAITING
 % ----------------------------------------------------------------------------------------------
 % set first final_position for recursion
-final_position(R,C,0,R,0,1) :- position(R,C,0), isRobot(R).
+final_position(R,C,0,R,0) :- position(R,C,0), isRobot(R).
 
 % calculate the earliest switching spot
 intersect(R,R',C,T) :- isRobot(R), isRobot(R'), position(R,C,T), position(R',C,T'), R!=R'.
@@ -42,11 +42,15 @@ switch(R',R) :- switch(R,R').
 % find switching positions
 switch(R,R',T,T'):- switch(R',R), earliest_intersect(R,R',C,T), position(R',C,T').
 
+% resolve multiple switches at the same time
+recswitch(R,R',T,T'):- switch(R,R',T,T').
+recswitch(R,R'',T,T''):- recswitch(R,R',T,T'), recswitch(R',R'',T',T'').
+finalswitch(R,R',T,T'):- recswitch(R,R',T,T'), not recswitch(R',_,T',_), not recswitch(_,R,_,T) .
 
-% create final positions recursively
-final_position(R,C',T+1,R',N+1,1) :- position(R',C',N+1), final_position(R,C,T,R',N,1), not switch(R',_,N,_).
-final_position(R,C',T+1,R'',D+1,1) :- switch(R',R'',N,D),not switch(R'',_,D,_), position(R'',C',D+1), final_position(R,C,T,R',N,_).
-final_position(R,C,T,R'',D,0) :- switch(R',R'',N,D), switch(R'',R''',D,D'), final_position(R,C,T,R',N,_).
+% RECURSION
+% ----------------------------------------------------------------------------------------------
+final_position(R,C',T+1,R',N+1) :- position(R',C',N+1), final_position(R,C,T,R',N), not finalswitch(R',_,N,_).
+final_position(R,C',T+1,R'',D+1) :- finalswitch(R',R'',N,D), position(R'',C',D+1), final_position(R,C,T,R',N).
 % ----------------------------------------------------------------------------------------------
 
 % INTEGRITY CONSTRAINTS
@@ -54,45 +58,57 @@ final_position(R,C,T,R'',D,0) :- switch(R',R'',N,D), switch(R'',R''',D,D'), fina
 % Switch twice, same pair.
 :- switch(R,R',T,D), switch(R,R',T',D'), T'>T.
 
+%no circles
+:- recswitch(R,R,T,T'').
+
 % Switch twice in one timestep.
 %:- switch(R,R',T,D),switch(R',R'',T,D'), R!=R''.
 
 % Switch to different robots in one timestep.
-:- switch(R,R',T,D),switch(R,R'',T',D), R'!=R''.
+:- finalswitch(R,R',T,D),finalswitch(R,R'',T',D), R'!=R''.
 
 % can't switch on removed steps
-:- switch(R,R',T,D), switch(R',R,T',D'), switch(R,R'',T'',D''), T''>T, T''<D'.
+:- finalswitch(R,R',T,D), finalswitch(R',R,T',D'), finalswitch(R,R'',T'',D''), T''>T, T''<D'.
 
 % can't become same robot
-:- switch(R,R',T,D), switch(R'',R',T',D), R!=R''.
+:- finalswitch(R,R',T,D), finalswitch(R'',R',T',D), R!=R''.
+
+%reach all shelfs
+last_final_position(R,C) :-final_position(R,C,T,R',N), not final_position(R,_,_,_,N+1).
+last_position(R,C) :- position(R,C,T), not position(R,_,T+1).
+
+:- last_position(R,C), not last_final_position(_,C).
 
 % Exclusive switching
 %:- switch(R,R'),switch(R,R''), R'!=R''.
 
 %edge colision
-:-final_position(R,C,T,B,D,K), final_position(R,C',T+1,B',D',K'), final_position(R',C',T,B'',D'',K''), final_position(R',C,T+1,B''',D''',K''').
+%:-final_position(R,C,T,B,D), final_position(R,C',T+1,B',D'), final_position(R',C',T,B'',D''), final_position(R',C,T+1,B''',D''').
 % ----------------------------------------------------------------------------------------------
 
 
 % OPTIMIZATION
 % ----------------------------------------------------------------------------------------------
+%minimzing saved steps or number of final positions does the same thing for now.
 %save_steps(T_later-T,R):- switch(R,R',T,T'_later), switch(R',R,T',T_later).
 %#maximize{X@1,R : save_steps(X,R)}.
 
-%optimizing for short paths is enough
-horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y,K)}.
-#minimize{T@2 : horizon(T)}.
-#minimize {1@1,T,R : final_position(R,C,T,R',D,K)}.
+horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
+#minimize{T@3 : horizon(T)}.
+
+#minimize {1@2,T,R : final_position(R,C,T,R',D)}.
 % ----------------------------------------------------------------------------------------------
 
 
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
 % reconstruct final moves for output.
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y,K), final_position(R,(C2X,C2Y),T+1,X',Y',K).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y), final_position(R,(C2X,C2Y),T+1,X',Y').
 
 % show statements
 #show.
 %#show switch/4.
-%#show final_position/6.
+%#show recswitch/4.
+%#show finalswitch/4.
+%#show final_position/5.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
