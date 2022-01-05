@@ -6,7 +6,7 @@ import numpy as np
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
 merger = "encodings/merger_plan_switching_greedy3.lp"
-benchmark_id = 19
+benchmark_id = 14
 #################################################################################
 
 # main program
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     # run clingo incrementally
     #m = m.replace("occurs","occurs_")
-    #m, s, t, ts = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 1*(x+1), 50, True)
+    #m, s, t, ts = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 2*(x+1), 10)
     #plt.plot(list(range(len(ts))),ts)
     #plt.show()
 

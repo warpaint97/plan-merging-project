@@ -28,6 +28,9 @@ class Clingo:
         elapsed_time = time.perf_counter()-start
         print("Satisfiable") if sr.satisfiable else print("Unsatisfiable")
         print("Execution time: {} sec".format(elapsed_time))
+        #print("Solved in " + str(ctl.statistics['summary']['times']['total']) + ' sec.')
+        print('Atoms : ' + str(int(ctl.statistics['problem']['lp']['atoms'])))
+        print('Rules : ' + str(int(ctl.statistics['problem']['lp']['rules'])) + '\n')
 
         #return model, satisfiability and elapsed time
         return self.get_optimal_model(), sr.satisfiable, elapsed_time
