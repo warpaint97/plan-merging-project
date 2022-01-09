@@ -26,6 +26,7 @@ class Clingo:
         sr = ctl.solve(on_model=on_model)
 
         elapsed_time = time.perf_counter()-start
+        print('Encoding: ' + str(merger))
         print("Satisfiable") if sr.satisfiable else print("Unsatisfiable")
         print("Execution time: {} sec".format(elapsed_time))
         #print("Solved in " + str(ctl.statistics['summary']['times']['total']) + ' sec.')
