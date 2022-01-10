@@ -6,7 +6,7 @@ import numpy as np
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
 merger = "encodings/plan_switching/choice_rules/greedy/merger_ps_g3.lp"
-benchmark_id = 14
+benchmark_id = 18
 #################################################################################
 
 # main program
@@ -19,16 +19,16 @@ if __name__ == "__main__":
     # WRITE YOUR CODE HERE
     #################################################################################
     # run clingo
-    m, s, t = clg.solve(bm_program, merger)
+    #m, s, t = clg.solve(bm_program, merger)
     #print(m)
 
-    m = m.replace("occurs","occurs_")
-    m, s, t = clg.solve(m, "encodings/waiting/choice_rules/merger_w_cr3.lp")
+    #m = m.replace("occurs","occurs_")
+    m, s, t = clg.solve(bm_program, "encodings/waiting/choice_rules/merger_w_cr3.lp")
 
     m = m.replace("occurs","occurs_")
-    m, s, t = clg.solve(m, "encodings/plan_switching/other/merger_ps+1w.lp")
+    m, s, t = clg.solve(m, "encodings/plan_switching/other/merger_ps_g.lp")
 
-    m, s, t = clg.solve(m, "encodings/other/validity_checker.lp")
+    #m, s, t = clg.solve(m, "encodings/other/validity_checker.lp")
 
     # run clingo incrementally
     #m = m.replace("occurs","occurs_")
