@@ -1,4 +1,4 @@
-We are using this collection of python scrips to make the testing og our various plan merging encodings on our benchmarks easier and faster.
+We are using this collection of python scrips to make the testing of our various plan merging encodings on our benchmarks easier and faster.
 Additionally it grants us the freedom of testing multiple encodings sequentially.
 
 To run this yourself, you'll have to move to the root of our project `plan-merging-project` so that it becomes your current working directory in your command window.
