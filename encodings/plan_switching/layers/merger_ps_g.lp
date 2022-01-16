@@ -3,9 +3,11 @@
 
 % READING INSTANCE
 % ----------------------------------------------------------------------------------------------
-#include "./input.lp".
+#include "./input_layers.lp".
 % ----------------------------------------------------------------------------------------------
 
+#const max_layers = 3.
+layer(0..max_layers).
 
 % READING PLANS
 % ----------------------------------------------------------------------------------------------
@@ -13,45 +15,46 @@
 move(robot(R),(DX,DY),T) :- occurs_(object(robot,R),action(move,(DX,DY)),T).
 
 %calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
+position(R,(X+DX,Y+DY),T+1,0) :- move(R,(DX,DY),T), position(R,(X,Y),T,0).
 % ----------------------------------------------------------------------------------------------
 
 
 % CALCULATE FINAL POSITIONS INCLUDING PLAN SWITCHING
 % ----------------------------------------------------------------------------------------------
-% set first final_position for recursion
-position(R,C,0,R,0,0) :- position(R,C,0), isRobot(R).
+edge_collision(R,R',T,L) :- position(R,C,T,L), position(R,C',T+1,L), position(R',C',T,L), position(R',C,T+1,L), R!=R', C!=C'.
+% fake edge collision
+edge_collision(R,R',T,L) :- position(R,C,T,L), position(R,C',T+2,L), position(R',C',T,L), position(R',C,T+2,L), R!=R', C!=C'.
+%first edge_collision
+earliest_edge_collision(R,R',T_MIN,L) :- T_MIN == #min{T : edge_collision(_,_,T,L)}, edge_collision(R,R',T_MIN,L).
 
 % calculate the earliest switching spot
-intersect(R,R',C,T) :- isRobot(R), isRobot(R'), position(R,C,T), position(R',C,T'), R!=R'.
-not_early_intersect(R,R',C,T) :- intersect(R,R',C,T), intersect(R,R',C',T'), T>T'.
-earliest_intersect(R,R',C,T) :- intersect(R,R',C,T), not not_early_intersect(R,R',C,T).
-
-edge_collision(R,R',T+1) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C'.
-% fake edge collision
-edge_collision(R,R',T+1) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C'.
+intersect(R,R',C,T,L) :- earliest_edge_collision(R,R',_,L), position(R,C,T,L), position(R',C,T',L), R!=R'.
+not_early_intersect(R,R',C,T,L) :- intersect(R,R',C,T,L), intersect(R,R',C',T',L), T>T'.
+earliest_intersect(R,R',C,T,L) :- intersect(R,R',C,T,L), not not_early_intersect(R,R',C,T,L).
 
 % find switching positions
-{switch(R,R',T,T',L)} :- edge_collision(R',R,T'',L), earliest_intersect(R,R',C,T,L), position(R',C,T').
-switch(R',R,T,T') :- switch(R,R',T'',T''',L), earliest_intersect(R',R,C,T,L), position(R,C,T').
+switch(R,R',T,T',L) :- earliest_edge_collision(R',R,T'',L), earliest_intersect(R,R',C,T,L), position(R',C,T',L).
 
-:- switch(R,R',T,T',L), switch(R,R''',T'',T''',L).
-:- switch(R',R,T,T',L), switch(R'',R,T'',T''',L).
-
-layer(R,L,D) :- switch(R,R',T,T',L).
-
-final_position(R,C',T+1,R',N+1) :- position(R',C',N+1), final_position(R,C,T,R',N), not switch(R',_,N,_).
-final_position(R,C',T+1,R'',D+1) :- switch(R',R'',N,D), position(R'',C',D+1), final_position(R,C,T,R',N).
+%before switch
+position(R,C,T,L+1) :- position(R,C,T,L), switch(R,_,T_SWITCH,_,L), T<T_SWITCH, layer(L).
+%after switch
+position(R,C,T,L+1) :- position(R,C',T,L), position(R',C,T+T_NEW-T_SWITCH,L), switch(R,R',T_SWITCH,T_NEW,L), T>=T_SWITCH, layer(L).
+%copy old positions into new layer
+position(R,C,T,L+1) :- position(R,C,T,L), earliest_edge_collision(_,_,_,L), not earliest_edge_collision(R,_,_,L), layer(L).
 % ----------------------------------------------------------------------------------------------
 
 
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
-% reconstruct final moves for output.
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,X,Y), final_position(R,(C2X,C2Y),T+1,X',Y').
+% determine the top layer
+top_layer(L_TOP-1) :- L_TOP == #count{L : position(robot(1),_C,_T,L)}.
+
+% final plan
+final_position(R,C,T) :- position(R,C,T,L), top_layer(L).
+final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T), final_position(R,(C2X,C2Y),T+1).
 
 % show statements
 #show.
 #show init/2.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
-%#show switch/4.
+%#show earliest_edge_collision/4.
