@@ -24,6 +24,8 @@ if __name__ == "__main__":
         m = m.replace("position_","position")
         #m = m.replace("final_edge_collision","edge_collision")
 
+    print(m)
+
     #m = m.replace("occurs","occurs_")
     #m, s, t = clg.solve(m, "encodings/plan_switching/other/merger_ps+1w.lp")
     #print(m)
