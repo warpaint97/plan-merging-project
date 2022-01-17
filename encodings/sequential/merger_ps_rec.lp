@@ -77,3 +77,4 @@ horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
 %#show last_position/3.
 %#show last_final_position/3.
 #show position_(robot(R),D,T) : final_position(robot(R),D,T,R',D').
+#show edge_collision/3.
