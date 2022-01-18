@@ -49,8 +49,6 @@ collision(R,R',T) :- edge_collision(R,R',T).
 {switch(R,R',T,T')}:- overtake_edge_collision(R,R',T,T').
 switch(R',R,T',T):- overtake_edge_collision(R,R',T,T'), switch(R,R',T,T').
 
-switch(robot(20),robot(19),16,17).
-
 % for each pair of robots decide to swich or not.
 {switch(R,R')} :- isRobot(R), isRobot(R'), collision(R,R',T).
 switch(R',R) :- switch(R,R').
