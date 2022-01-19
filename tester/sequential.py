@@ -18,8 +18,7 @@ if __name__ == "__main__":
     # read paths
     m, s, t = clg.solve(bm_program, "encodings/sequential/input_seq.lp")
     # switch plans
-    
-    for i in range(4):
+    for i in range(2):
         m, s, t = clg.solve(m, "encodings/sequential/merger_ps_rec.lp")
         m = m.replace("position_","position")
         #m = m.replace("final_edge_collision","edge_collision")
