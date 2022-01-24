@@ -6,7 +6,7 @@ import numpy as np
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
 merger = "encodings/plan_switching/choice_rules/greedy/merger_ps_g3.lp"
-benchmark_id = 20
+benchmark_id = 3
 #################################################################################
 
 # main program
@@ -19,17 +19,18 @@ if __name__ == "__main__":
     # WRITE YOUR CODE HERE
     #################################################################################
     # run clingo
-    m, s, t = clg.solve(bm_program, merger)
+    m = clg.solve(bm_program, merger)
     #print(m)
 
-    m = m.replace("occurs","occurs_")
-    m, s, t = clg.solve(m, "encodings/waiting/choice_rules/merger_w_cr3.lp")
+    m.model = m.model.replace("occurs","occurs_")
+    m = clg.solve(bm_program, "encodings/waiting/choice_rules/merger_w_cr3.lp")
+    #print(m.model)
 
-    m = m.replace("occurs","occurs_")
-    m, s, t = clg.solve(m, "encodings/plan_switching/other/merger_ps+1w.lp")
+    m.model = m.model.replace("occurs","occurs_")
+    m = clg.solve(m.model, "encodings/plan_switching/other/merger_ps+1w.lp")
     #print(m)
 
-    m, s, t = clg.solve(m, "encodings/other/validity_checker.lp")
+    m = clg.solve(m.model, "encodings/other/validity_checker.lp")
 
     # run clingo incrementally
     #m = m.replace("occurs","occurs_")
@@ -38,5 +39,5 @@ if __name__ == "__main__":
     #plt.show()
 
     # load model into vizalizer
-    clg.load_viz(m)
+    clg.load_viz(m.model)
     #################################################################################

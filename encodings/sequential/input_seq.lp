@@ -15,4 +15,3 @@ position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
 % show statements
 #show.
 #show position/3.
-#show isRobot/1.

@@ -1,11 +1,12 @@
-from iclingo import Clingo
+from iclingo import Clingo, Model
 import funcs
 import matplotlib.pyplot as plt
 import numpy as np
+import parse
 
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
-benchmark_id = 14
+benchmark_id = 16
 #################################################################################
 
 # main program
@@ -16,24 +17,34 @@ if __name__ == "__main__":
     clg = Clingo()
     #################################################################################
     # read paths
-    m, s, t = clg.solve(bm_program, "encodings/sequential/input_seq.lp")
+    m = clg.solve(bm_program, "encodings/sequential/input_seq.lp")
+    #print(m.statistics['summary']['times']['total'])
+
+    #parsing
+    robots = []
+    for atom in m.model.split(" "):
+        parsed = parse.parse('position(robot({}),({},{}),{}).', atom)
+        robots.append(int(parsed[0]))
+    n_robots = max(robots)
+
     # switch plans
-    for i in range(2):
-        m, s, t = clg.solve(m, "encodings/sequential/merger_ps_rec.lp")
-        m = m.replace("position_","position")
-        #m = m.replace("final_edge_collision","edge_collision")
+    last_cost = []
+    for i in range(n_robots):
+        print("Plan switching iteration number: {}/{}".format(i+1,n_robots))
+        m = clg.solve(m.model, "encodings/sequential/merger_ps_rec.lp")
+        m.model = m.model.replace("position_","position")
+        m.model = m.model.replace("final_edge_collision","edge_collision")
+        print(m.cost)
 
-    print(m)
-
-    #m = m.replace("occurs","occurs_")
-    #m, s, t = clg.solve(m, "encodings/plan_switching/other/merger_ps+1w.lp")
-    #print(m)
-
-    #m, s, t = clg.solve(m, "encodings/other/validity_checker.lp")
+        #termination criterion
+        if (m.cost == last_cost):
+            break
+        
+        last_cost = m.cost
 
     # run clingo incrementally
-    #m = m.replace("occurs","occurs_")
-    #m, s, t, ts = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 2*(x+1), 10)
+    #m.model = m.model.replace("occurs","occurs_")
+    #m, stats = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 2*(x+1), 10)
     #plt.plot(list(range(len(ts))),ts)
     #plt.show()
 
