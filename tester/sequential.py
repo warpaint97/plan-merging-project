@@ -6,7 +6,14 @@ import parse
 
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
-benchmark_id = 16
+path = "encodings/sequential/"
+
+init_lp = path + "inits.lp"
+position_lp = path + "positions.lp"
+plan_switcher = path + "merger_ps_rec.lp"
+waiter = path + "merger_w_det2.lp"
+
+benchmark_id = 14
 #################################################################################
 
 # main program
@@ -17,7 +24,8 @@ if __name__ == "__main__":
     clg = Clingo()
     #################################################################################
     # read paths
-    m = clg.solve(bm_program, "encodings/sequential/input_seq.lp")
+    m = clg.solve(bm_program, position_lp)
+    init = clg.solve(bm_program, init_lp)
     #print(m.statistics['summary']['times']['total'])
 
     #parsing
@@ -31,9 +39,9 @@ if __name__ == "__main__":
     last_cost = []
     for i in range(n_robots):
         print("Plan switching iteration number: {}/{}".format(i+1,n_robots))
-        m = clg.solve(m.model, "encodings/sequential/merger_ps_rec.lp")
+        m = clg.solve(m.model, plan_switcher)
         m.model = m.model.replace("position_","position")
-        m.model = m.model.replace("final_edge_collision","edge_collision")
+        #m.model = m.model.replace("final_edge_collision","edge_collision")
         print(m.cost)
 
         #termination criterion
@@ -42,6 +50,12 @@ if __name__ == "__main__":
         
         last_cost = m.cost
 
+
+    # waiting
+    m = clg.solve(m.model, waiter)
+    #print(m.model)
+    #print(m.cost)
+
     # run clingo incrementally
     #m.model = m.model.replace("occurs","occurs_")
     #m, stats = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 2*(x+1), 10)
@@ -49,5 +63,5 @@ if __name__ == "__main__":
     #plt.show()
 
     # load model into vizalizer
-    #clg.load_viz(m)
+    clg.load_viz(init.model+m.model)
     #################################################################################
