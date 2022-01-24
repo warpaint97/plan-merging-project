@@ -36,6 +36,7 @@ class Clingo:
         print("Satisfiable") if sr.satisfiable else print("Unsatisfiable")
         print("Total time: {} sec".format(ctl.statistics['summary']['times']['total']))
         print("CPU time: {} sec".format(ctl.statistics['summary']['times']['cpu']))
+        print("Grounding time: {} sec".format(ctl.statistics['summary']['times']['total'] - ctl.statistics['summary']['times']['solve']))
         print("Solving time: {} sec".format(ctl.statistics['summary']['times']['solve']))
         print('Atoms : ' + str(int(ctl.statistics['problem']['lp']['atoms'])))
         print('Rules : ' + str(int(ctl.statistics['problem']['lp']['rules'])) + '\n')
