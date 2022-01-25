@@ -10,7 +10,7 @@ path = "encodings/sequential/"
 
 init_lp = path + "inits.lp"
 position_lp = path + "positions.lp"
-plan_switcher = path + "merger_ps_rec.lp"
+plan_switcher = path + "merger_ps_rec2.lp"
 waiter = path + "merger_w_det2.lp"
 
 benchmark_id = 14
@@ -56,6 +56,9 @@ if __name__ == "__main__":
     m = clg.solve(m.model, waiter)
     #print(m.model)
     #print(m.cost)
+
+    #check validity
+    m = clg.solve(m.model, "encodings/other/validity_checker.lp")
 
     # run clingo incrementally
     #m.model = m.model.replace("occurs","occurs_")

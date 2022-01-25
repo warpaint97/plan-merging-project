@@ -1,3 +1,5 @@
+isRobot(R) :- position(R,_,_).
+
 % CALCULATE FINAL POSITIONS
 % ----------------------------------------------------------------------------------------------
 % set first final_position for recursion
