@@ -23,9 +23,10 @@ if __name__ == "__main__":
     bm_program = funcs.getBenchmarkProgram(benchmarks[benchmark_id - 1])
     clg = Clingo()
     #################################################################################
+    # read instance
+    init = clg.solve(bm_program, init_lp)
     # read paths
     m = clg.solve(bm_program, position_lp)
-    init = clg.solve(bm_program, init_lp)
     #print(m.statistics['summary']['times']['total'])
 
     #parsing
