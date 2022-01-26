@@ -54,17 +54,9 @@ if __name__ == "__main__":
 
     # waiting
     m = clg.solve(m.model, waiter)
-    #print(m.model)
-    #print(m.cost)
 
     #check validity
     m = clg.solve(init.model+m.model, "encodings/other/validity_checker.lp")
-
-    # run clingo incrementally
-    #m.model = m.model.replace("occurs","occurs_")
-    #m, stats = clg.isolve(bm_program, "encodings/merger_waiting_choice_rules_improved3.lp", "max_waits", lambda x: 2*(x+1), 10)
-    #plt.plot(list(range(len(ts))),ts)
-    #plt.show()
 
     # load model into vizalizer
     clg.load_viz(init.model+m.model)
