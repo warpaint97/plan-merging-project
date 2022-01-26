@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #print(m.cost)
 
     #check validity
-    m = clg.solve(m.model, "encodings/other/validity_checker.lp")
+    m = clg.solve(init.model+m.model, "encodings/other/validity_checker.lp")
 
     # run clingo incrementally
     #m.model = m.model.replace("occurs","occurs_")
