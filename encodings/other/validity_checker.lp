@@ -13,7 +13,8 @@
 move(robot(R),(DX,DY),T) :- occurs(object(robot,R),action(move,(DX,DY)),T).
 
 % calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
+position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T), isRobot(R).
+destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 % ----------------------------------------------------------------------------------------------
 
 
@@ -23,6 +24,8 @@ position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
 :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C'.
 % vertex collision
 :- position(R,C,T), position(R',C,T), R!=R'.
+% vertex collisions with arrived robots
+:- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
 % robots only move on valid nodes
 :- position(R,C,T), not position(C), isRobot(R).
 % moves only have a magnitude of 0 or 1

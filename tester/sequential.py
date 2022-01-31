@@ -2,16 +2,15 @@ from iclingo import Clingo, Model
 import funcs
 import matplotlib.pyplot as plt
 import numpy as np
-import parse
 
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
 path = "encodings/sequential/"
 
-init_lp = path + "inits.lp"
-position_lp = path + "positions.lp"
+inputter = path + "input.lp"
 plan_switcher = path + "merger_ps_rec2.lp"
-waiter = path + "merger_w_det2.lp"
+waiter = path + "merger_w_seq.lp"
+outputter = path + "output.lp"
 
 benchmark_id = 14
 #################################################################################
@@ -20,27 +19,29 @@ benchmark_id = 14
 if __name__ == "__main__":
     # init
     benchmarks = funcs.getAllBenchmarks()
-    bm_program = funcs.getBenchmarkProgram(benchmarks[benchmark_id - 1])
+    bm_init, bm_occurs = funcs.getBenchmarkProgram(benchmarks[benchmark_id - 1])
     clg = Clingo()
+    time = [0,0]
+    # SEQUENTIAL PLAN MERGING
     #################################################################################
-    # read instance
-    init = clg.solve(bm_program, init_lp)
+    # INPUT
+    #################################################################################
     # read paths
-    m = clg.solve(bm_program, position_lp)
-    #print(m.statistics['summary']['times']['total'])
+    m = clg.solve(bm_init+bm_occurs, inputter)
+    time = funcs.addTimes(m, time)
 
+    #################################################################################
+    # PLAN SWITCHING
+    #################################################################################
     #parsing
-    robots = []
-    for atom in m.model.split(" "):
-        parsed = parse.parse('position(robot({}),({},{}),{}).', atom)
-        robots.append(int(parsed[0]))
-    n_robots = max(robots)
+    n_robots = max(funcs.parse(m.model, 'position(robot({}),({},{}),{}).', 0))
 
-    # switch plans
+    # switch plans iteratively
     last_cost = []
     for i in range(n_robots):
         print("Plan switching iteration number: {}/{}".format(i+1,n_robots))
         m = clg.solve(m.model, plan_switcher)
+        time = funcs.addTimes(m, time)
         m.model = m.model.replace("position_","position")
         #m.model = m.model.replace("final_edge_collision","edge_collision")
         print(m.cost)
@@ -51,13 +52,39 @@ if __name__ == "__main__":
         
         last_cost = m.cost
 
+    #################################################################################
+    # WAITING
+    #################################################################################
+    #parsing
+    max_path_len = max(funcs.parse(m.model, 'position(robot({}),({},{}),{}).', 3))
 
-    # waiting
-    m = clg.solve(m.model, waiter)
+    # waiting iteratively
+    last_cost = []
+    for i in range(max_path_len):
+        print("Waiting iteration number: {}/{}".format(i+1,max_path_len))
+        m = clg.solve(m.model, waiter)
+        time = funcs.addTimes(m, time)
+        m.model = m.model.replace("position_","position")
+        print(m.cost)
+
+        #termination criterion
+        if (m.cost == last_cost):
+            break
+        
+        last_cost = m.cost
+                
+    #################################################################################
+    # OUTPUT
+    #################################################################################
+    #convert model to asprilo format for the visualizer
+    m = clg.solve(bm_init+m.model, outputter)
+    time = funcs.addTimes(m, time)
+
+    print("FINAL STATISTICS:\nTotal time: {}\nGrounding time: {}\nSolving time: {}\n".format(time[0]+time[1],time[0],time[1]))
 
     #check validity
-    m = clg.solve(init.model+m.model, "encodings/other/validity_checker.lp")
+    #m = clg.solve(m.model, "encodings/other/validity_checker.lp")
 
     # load model into vizalizer
-    clg.load_viz(init.model+m.model)
+    clg.load_viz(m.model)
     #################################################################################
