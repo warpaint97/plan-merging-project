@@ -5,9 +5,11 @@ isRobot(R) :- position(R,_,_).
 destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 
 % find times for waitable positions
-waitable(R,T) :- position(R,C,T+1), position(R',C,T'), R!=R'.
+%waitable(R,R',T) :- position(R,C,T+1), position(R',C,T'), R!=R'.
+%not_earliest_waitable(R,R',T) :- waitable(R,R',T), waitable(R,R',T'), T>T'.
+%earliest_waitable(R,R',T) :- not not_earliest_waitable(R,R',T), waitable(R,R',T).
 % either wait at one waitable timestep or don't
-{wait(R,T) : waitable(R,T)}1 :- isRobot(R).
+{wait(R,T) : position(R,_,T)}1 :- isRobot(R).
 
 % reconstruct positions
 % before wait
@@ -20,6 +22,9 @@ position_(R,C,T) :- not wait(R), position(R,C,T).
 
 % find new vertex collisions
 vertex_collision(C,T) :- position_(R,C,T), position_(R',C,T), R!=R'.
+collision(R,R',C,T) :- isRobot(R), isRobot(R'), position_(R,C,T), position_(R',C,T), R!=R'.
+not_early_collsion(R,R',C,T) :- collision(R,R',C,T), collision(R,R',C',T'), T>T'.
+earliest_collision(R,R',C,T) :- collision(R,R',C,T), not not_early_collsion(R,R',C,T).
 
 % INTEGRITY CONSTRAINTS
 % ----------------------------------------------------------------------------------------------
@@ -37,6 +42,9 @@ vertex_collision(C,T) :- position_(R,C,T), position_(R',C,T), R!=R'.
 #minimize {1@1,R : wait(R,T)}.
 % minimize number of vertex_collisions
 #minimize {1@2,C,T : vertex_collision(C,T)}.
+% minimize number of vertex_collision
+#minimize {1@3,R,R' : earliest_collision(R,R',C,T)}.
+
 % ----------------------------------------------------------------------------------------------
 
 % output

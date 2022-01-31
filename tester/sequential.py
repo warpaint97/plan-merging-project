@@ -12,7 +12,7 @@ plan_switcher = path + "merger_ps_rec2.lp"
 waiter = path + "merger_w_seq.lp"
 outputter = path + "output.lp"
 
-benchmark_id = 14
+benchmark_id = 13
 #################################################################################
 
 # main program
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             break
         
         last_cost = m.cost
-
+        
     #################################################################################
     # WAITING
     #################################################################################
@@ -59,7 +59,6 @@ if __name__ == "__main__":
     max_path_len = max(funcs.parse(m.model, 'position(robot({}),({},{}),{}).', 3))
 
     # waiting iteratively
-    last_cost = []
     for i in range(max_path_len):
         print("Waiting iteration number: {}/{}".format(i+1,max_path_len))
         m = clg.solve(m.model, waiter)
@@ -68,10 +67,8 @@ if __name__ == "__main__":
         print(m.cost)
 
         #termination criterion
-        if (m.cost == last_cost):
+        if (m.cost[1] == 0):
             break
-        
-        last_cost = m.cost
                 
     #################################################################################
     # OUTPUT
@@ -83,7 +80,7 @@ if __name__ == "__main__":
     print("FINAL STATISTICS:\nTotal time: {}\nGrounding time: {}\nSolving time: {}\n".format(time[0]+time[1],time[0],time[1]))
 
     #check validity
-    #m = clg.solve(m.model, "encodings/other/validity_checker.lp")
+    m = clg.solve(m.model, "encodings/other/validity_checker.lp")
 
     # load model into vizalizer
     clg.load_viz(m.model)
