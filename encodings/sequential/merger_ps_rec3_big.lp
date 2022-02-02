@@ -1,5 +1,7 @@
 % CALCULATE FINAL POSITIONS INCLUDING WAITING
 % ----------------------------------------------------------------------------------------------
+isRobot(R) :- position(R,_,_).
+
 % set first final_position for recursion
 final_position(R,C,0,R,0) :- position(R,C,0), isRobot(R).
 
