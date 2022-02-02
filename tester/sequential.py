@@ -8,18 +8,17 @@ import numpy as np
 path = "encodings/sequential/"
 
 inputter = path + "input.lp"
-plan_switcher = path + "merger_ps_rec2.lp"
+plan_switcher = path + "merger_ps_rec3_big.lp"
 waiter = path + "merger_w_seq.lp"
 outputter = path + "output.lp"
 
-benchmark_id = 13
+benchmark_id = 14
+benchmarks = funcs.getAllBenchmarks()
 #################################################################################
 
-# main program
-if __name__ == "__main__":
+def merger(bm_id):
     # init
-    benchmarks = funcs.getAllBenchmarks()
-    bm_init, bm_occurs = funcs.getBenchmarkProgram(benchmarks[benchmark_id - 1])
+    bm_init, bm_occurs = funcs.getBenchmarkProgram(benchmarks[bm_id - 1])
     clg = Clingo()
     time = [0,0]
     # SEQUENTIAL PLAN MERGING
@@ -43,15 +42,13 @@ if __name__ == "__main__":
         m = clg.solve(m.model, plan_switcher)
         time = funcs.addTimes(m, time)
         m.model = m.model.replace("position_","position")
-        #m.model = m.model.replace("final_edge_collision","edge_collision")
         print(m.cost)
-
         #termination criterion
         if (m.cost == last_cost):
             break
         
         last_cost = m.cost
-        
+
     #################################################################################
     # WAITING
     #################################################################################
@@ -59,6 +56,7 @@ if __name__ == "__main__":
     max_path_len = max(funcs.parse(m.model, 'position(robot({}),({},{}),{}).', 3))
 
     # waiting iteratively
+    last_cost = []
     for i in range(max_path_len):
         print("Waiting iteration number: {}/{}".format(i+1,max_path_len))
         m = clg.solve(m.model, waiter)
@@ -67,8 +65,10 @@ if __name__ == "__main__":
         print(m.cost)
 
         #termination criterion
-        if (m.cost[1] == 0):
+        if (m.cost == last_cost):
             break
+        
+        last_cost = m.cost
                 
     #################################################################################
     # OUTPUT
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     m = clg.solve(bm_init+m.model, outputter)
     time = funcs.addTimes(m, time)
 
-    print("FINAL STATISTICS:\nTotal time: {}\nGrounding time: {}\nSolving time: {}\n".format(time[0]+time[1],time[0],time[1]))
+    print("FINAL STATISTICS:\nBenchmark: {}\nTotal time: {}\nGrounding time: {}\nSolving time: {}\n".format(benchmarks[bm_id-1],time[0]+time[1],time[0],time[1]))
 
     #check validity
     m = clg.solve(m.model, "encodings/other/validity_checker.lp")
@@ -85,3 +85,16 @@ if __name__ == "__main__":
     # load model into vizalizer
     clg.load_viz(m.model)
     #################################################################################
+
+
+# main program
+if __name__ == "__main__":
+    merger(16)
+    #for bm_id in range(len(benchmarks)):
+    #    if bm_id+1 in [22,23]:
+    #        continue
+    #    try:
+    #        merger(bm_id+1)
+    #    except:
+    #        pass
+    
