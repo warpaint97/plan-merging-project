@@ -96,6 +96,8 @@ final_collision(R,R',T) :- final_edge_collision_possible(R,R',T).
 
 final_overtake_edge_collision(R,R',T,T') :- last_final_position(R,C,T), final_position(R',C,T',_,_), R!=R', T'>T.
 
+position_(R,C,T) :- final_position(robot(R),C,T,_,_).
+
 % show statements
 #show.
 %#show collision/3.
@@ -110,4 +112,4 @@ final_overtake_edge_collision(R,R',T,T') :- last_final_position(R,C,T), final_po
 %#show overtake_edge_collision/4.
 %#show final_overtake_edge_collision/4.
 %#show final_position/5.
-#show position_(R,C,T) : final_position(robot(R),C,T,_,_).
+#show position_/3.
