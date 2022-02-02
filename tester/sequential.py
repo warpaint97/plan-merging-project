@@ -8,7 +8,7 @@ import numpy as np
 path = "encodings/sequential/"
 
 inputter = path + "input.lp"
-plan_switcher = path + "merger_ps_rec3_big.lp"
+plan_switcher = path + "merger_ps_rec3_small.lp"
 waiter = path + "merger_w_seq.lp"
 outputter = path + "output.lp"
 
@@ -89,7 +89,7 @@ def merger(bm_id):
 
 # main program
 if __name__ == "__main__":
-    merger(16)
+    merger(14)
     #for bm_id in range(len(benchmarks)):
     #    if bm_id+1 in [22,23]:
     #        continue

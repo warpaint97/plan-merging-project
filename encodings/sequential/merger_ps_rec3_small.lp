@@ -99,7 +99,7 @@ final_collision(R,R',T) :- final_edge_collision(R,R',T).
 final_overtake_edge_collision(R,R',T,T') :- last_final_position(R,C,T), final_position(R',C,T',_,_), R!=R', T'>T.
 
 
-position_(R,C,T) : final_position(R,C,T,_,_).
+position_(R,C,T) :- final_position(R,C,T,_,_).
 
 % show statements
 #show.
