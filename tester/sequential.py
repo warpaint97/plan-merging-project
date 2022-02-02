@@ -89,7 +89,7 @@ def merger(bm_id):
 
 # main program
 if __name__ == "__main__":
-    merger(14)
+    merger(16)
     #for bm_id in range(len(benchmarks)):
     #    if bm_id+1 in [22,23]:
     #        continue
