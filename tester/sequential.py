@@ -54,24 +54,23 @@ def merger(bm_id):
     #################################################################################
     #parsing
     max_path_len = max(funcs.parse(m.model, 'position(robot({}),({},{}),{}).', 3))
-    m = clg.solve(m.model, "encodings/sequential/merger_w_cr_ei.lp")
-    time = funcs.addTimes(m, time)
-    m.model = m.model.replace("position_","position")
 
     # waiting iteratively
-    #last_cost = []
-    #for i in range(max_path_len):
-    #    print("Waiting iteration number: {}/{}".format(i+1,max_path_len))
-    #    m = clg.solve(m.model, waiter)
-    #    time = funcs.addTimes(m, time)
-    #    m.model = m.model.replace("position_","position")
-    #    print(m.cost)
+    last_cost = []
+    for i in range(max_path_len):
+        print("Waiting iteration number: {}/{}".format(i+1,max_path_len))
+        m = clg.solve(m.model, waiter)
+        time = funcs.addTimes(m, time)
+        m.model = m.model.replace("position_","position")
+        print(m.cost)
+        o = clg.solve(bm_init+m.model, outputter)
+        clg.load_viz(o.model)
 
         #termination criterion
-    #    if (m.cost == last_cost):
-    #        break
+        if (m.cost == last_cost):
+            break
         
-    #    last_cost = m.cost
+        last_cost = m.cost
                 
     #################################################################################
     # OUTPUT
@@ -92,7 +91,7 @@ def merger(bm_id):
 
 # main program
 if __name__ == "__main__":
-    merger(23)
+    merger(13)
     #for bm_id in range(len(benchmarks)):
     #    if bm_id+1 in [22,23]:
     #        continue
