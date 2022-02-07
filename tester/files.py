@@ -1,10 +1,9 @@
 def WriteFile(path, content):
-    f = open(path,"w")
-    f.write(content)
-    f.close()
+    with open(path, 'w') as f:
+        f.write(content)
 
 def ReadFile(path):
-    f = open(path,"r")
-    content = f.read()
-    f.close()
-    return content
+    with open(path, 'r') as f:
+        content = f.read()
+        return content
+    return None
