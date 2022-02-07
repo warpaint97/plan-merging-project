@@ -3,7 +3,7 @@ Data of our merging solution for each benchmark saved with standardized format a
 These results are meant to be compared with the results of other groups and additionally represent the quality of our final solution as the data speaks for itself.
 
 ## Standardized Data Format for each Benchmark:
-"groupName" : "",
+`"groupName" : "",
             "solverName" : "",
 
             "problemType" : None,
@@ -20,3 +20,4 @@ These results are meant to be compared with the results of other groups and addi
 		    },
             "info" : None,
             "model" : None
+`
