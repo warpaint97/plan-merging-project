@@ -10,6 +10,7 @@ We aim to find a solution for intelligently merging plans of individual robots i
 - `benchmark_tool/` contains our tool to generate benchmarks for the M-domain.
 - `tester/` contains python scripts which help in testing our merger encodings on a given benchmark.
 - `figures/` contains graphs and other figures for analysis of our merger.
+- `benchmark_data` contains a set of json files with important benchmark data of our solution.
 
 ## Contributors
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
