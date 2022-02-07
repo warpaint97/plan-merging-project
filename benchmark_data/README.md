@@ -11,12 +11,12 @@ These results are meant to be compared with the results of other groups and addi
 	"objective_cost" : [],
 
 	"instance" : None,
-	"statistics" : {
-	"groundingTime" : 0.0,
-	"solvingTime" : 0.0,
-	"total" : 0.0,
-	"atoms" : 0.0,
-	"rules" : 0.0
-	    },
+		"statistics" : {
+		"groundingTime" : 0.0,
+		"solvingTime" : 0.0,
+		"total" : 0.0,
+		"atoms" : 0.0,
+		"rules" : 0.0
+	},
 	"info" : None,
 	"model" : None
