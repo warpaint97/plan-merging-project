@@ -3,6 +3,7 @@
 % set first final_position for recursion
 
 isRobot(R):- position(R,_,_).
+% set first final_position for recursion
 final_position(R,C,0,R,0) :- position(R,C,0), isRobot(R).
 
 % calculate the earliest switching spot
@@ -69,13 +70,13 @@ last_position(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 % ---------------------------------------------------------------------------------------------
 
 horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
-#minimize{T@4 : horizon(T)}.
+%#minimize{T@4 : horizon(T)}.
 
-#minimize {1@1,T,R : final_position(R,C,T,R',D)}.
+#minimize {1@3,T,R : final_position(R,C,T,R',D)}.
 
-#minimize {1@3,R,R' : final_collision(R,R',T)}.
+#minimize {1@2,R,R' : final_collision(R,R',T)}.
 
-#minimize {1@2,R,R' : final_overtake_edge_collision(R,R',T,T')}.
+#minimize {1@1,R,R' : final_overtake_edge_collision(R,R',T,T')}.
 % ----------------------------------------------------------------------------------------------
 
 
