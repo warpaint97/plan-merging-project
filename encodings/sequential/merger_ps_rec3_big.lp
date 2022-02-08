@@ -8,17 +8,23 @@ final_position(R,C,0,R,0) :- position(R,C,0), isRobot(R).
 % calculate the earliest switching spot
 intersect(R,R',C,T) :- isRobot(R), isRobot(R'), position(R,C,T), position(R',C,T'), R!=R'.
 
-not_early_intersect(R,R',C,T) :- intersect(R,R',C,T), intersect(R,R',C',T'), T>T'.
+%not_early_intersect(R,R',C,T) :- intersect(R,R',C,T), intersect(R,R',C',T'), T>T'.
 
-earliest_intersect(R,R',C,T) :- intersect(R,R',C,T), not not_early_intersect(R,R',C,T).
+%earliest_intersect(R,R',C,T) :- intersect(R,R',C,T), not not_early_intersect(R,R',C,T).
 
 %edge_collision(R,R',T+1) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C'.
 % fake edge collision
 %fake_edge_collision(R,R',T) :- position(R,C,T), position(R,C',T+1), position(R',C',T-1), position(R',C,T), R!=R', C!=C'.
 %ake_edge_collision(R,R',T) :- position(R,C,T), position(R',C',T+1), position(R,C',T-1), position(R',C,T), R!=R', C!=C'.
-edge_collision_possible(R,R',T) :- intersect(R,R',C,T), intersect(R,R',C',T+1), position(R,C,T), position(R,C',T+1), position(R',C',T'), position(R',C,T'+1).
+edge_collision_possible(R,R',T) :- intersect(R,R',C,T), intersect(R,R',C',T+1), position(R',C',T'), position(R',C,T'+1).
+
 overtake_edge_collision(R,R',T,T') :- last_position(R,C,T), position(R',C,T'), R!=R', T'>T.
 
+initial_intersect(R,R',C,T):- intersect(R,R',C,T), not intersect(R,R',_,T-1).
+
+not_intersect_before_collision(R,R',C,T) :- edge_collision_possible(R,R',T'), initial_intersect(R,R',C,T), T<T',initial_intersect(R,R',_,T''), T''<=T', T<T''.
+
+intersect_before_collision(R,R',C,T) :- edge_collision_possible(R,R',T'), initial_intersect(R,R',C,T), T<=T', not not_intersect_before_collision(R,R',C,T).
 
 collision(R,R',T) :- edge_collision_possible(R,R',T).
 
@@ -31,7 +37,7 @@ switch(R',R,T',T):- overtake_edge_collision(R,R',T,T'), switch(R,R',T,T').
 switch(R',R) :- switch(R,R').
 
 % find switching positions
-switch(R,R',T,T'):- switch(R,R'), earliest_intersect(R,R',C,T), position(R',C,T').
+switch(R,R',T,T'):- switch(R,R'), intersect_before_collision(R,R',C,T), position(R',C,T').
 
 % resolve multiple switches at the same time
 %recswitch(R,R',T,T'):- switch(R,R',T,T').
@@ -72,9 +78,11 @@ last_position(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
 %#minimize{T@3 : horizon(T)}.
 
-#minimize {1@1,T,R : final_position(R,C,T,R',D)}.
+#minimize {1@4,T,R : final_move(R,C,T)}.
 
-#minimize {1@3,R,R' : final_collision(R,R',T)}.
+#minimize {1@1,R,R' : final_collision(R,R',T)}.
+
+#minimize {1@3,R,R' : final_overtake_edge_collision(R,R',T,T'), overtake_edge_collision(R,R',T,T')}.
 
 #minimize {1@2,R,R' : final_overtake_edge_collision(R,R',T,T')}.
 % ----------------------------------------------------------------------------------------------
@@ -93,6 +101,8 @@ final_edge_collision_possible(R,R',T+1) :- final_intersect(R,R',C,T), final_inte
 %final_fake_edge_collision(R,R',T) :- final_position(R,C,T,_,_), final_position(R',C',T+1,_,_), final_position(R,C',T-1,_,_), final_position(R',C,T,_,_), R!=R', C!=C'.
 
 final_collision(R,R',T) :- final_edge_collision_possible(R,R',T).
+
+
 
 final_overtake_edge_collision(R,R',T,T') :- last_final_position(R,C,T), final_position(R',C,T',_,_), R!=R', T'>T.
 
