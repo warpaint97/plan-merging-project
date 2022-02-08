@@ -2,7 +2,7 @@
 % make robots wait before a collsion so that the one with longest path ahead goes first.
 % in case of same length the one with higher nuber goes first.
 % this only works for groups of robots on overlapping paths oving in the sae direction.
-% such a siplified proble can be created using plan switching.
+% such a simplified proble can be created using plan switching.
 
 
 % CONSTANTS
@@ -81,10 +81,10 @@ do_wait(R,C,T-1,A-W) :- waited_so_far(R,T-1,W), wait_for(R,C,T,A), not not_wait_
 do_wait(R,C,T-1,A-W) :- later_at_collision(R,R',C,T,T'), prio(R',C,T,P), not prio(_,C,T,P+1), waited_so_far(R',T,A), waited_so_far(R,T-1,W).
 
 % wait intersecting robots
-do_wait(R',C,T'-1,T+A-T'-A'+1) :- earliest_intersect(R,R',C,T,T'), not earliest_collision(R,R',_,_), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T', T+A>=T'+A'.
+do_wait(R',C,T'-1,T+A-T'-A'+1) :- intersect(R,R',C,T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T', T+A>=T'+A'.
 
 % wait for robot ahead of you
-do_wait(R',C',T'+A'-1,1) :- intersect(R,R',C',T,T'), not earliest_collision(R,R',_,_), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', wait(R,C,T).
+do_wait(R',C',T'+A'-1,1) :- intersect(R,R',C',T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', wait(R,C,T+A).
 %wait(R',C,T..T+A-1) :- do_wait(R,C,T,A), synced(R,R').
 
 %find waits that occur after next do_wait
@@ -92,7 +92,7 @@ overwait(R,T,T'):- do_wait(R,C,T,A), do_wait(R,C',T',A'), T'<T+A, T'>T.
 
 overwait(R,T,T'):- do_wait(R,C,T,A), overwait(R,T'',T), do_wait(R,C,T',A'), T'<T+A+T-T'', T'>T.
 
-%calclate waits
+%calculate waits
 wait(R,C,T..T+A-1):- do_wait(R,C,T,A), not overwait(R,T,_), not overwait(R,_,T).
 
 wait(R,C,T..T'-1):- do_wait(R,C,T,A), overwait(R,T,T').
@@ -117,14 +117,22 @@ final_position(R,C',T+1,N) :- position(R,C',T-N+1), not wait(R,_,T), final_posit
 % reconstruct final moves for output.
 final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
 
+% vertex collision, as a fact for debugging
+final_vertex(R,R',C,T):- final_position(R,C,T,N), final_position(R',C,T,N'), R!=R'.
+
 % show statements
 #show.
 %#show final_position/4.
+%#show earliest_intersect/5.
+%#show earliest_collision/4.
+%#show waited_so_far/3.
 %#show overwait/3.
+%#show hell/4.
 %#show do_wait/4.
 %#show prio/4.
 %#show wait_for/4.
 %#show wait/3.
 %#show waited_so_far/3.
 %#show next/4.
+%#show final_vertex/4.
 #show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
