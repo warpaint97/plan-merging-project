@@ -6,13 +6,14 @@ destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 
 % find times for waitable positions
 has_vc(R) :- position(R,C,T), position(R',C,T), R!=R'.
-waitable(R,T) :- has_vc(R), has_vc(R'), position(R,C,T+1), position(R',C,T'), R!=R'.
+waitable(R,T) :- has_vc(R'), position(R,C,T+1), position(R',C,T'), R!=R'.
+waitable(R,T) :- waitable(R',T), position(R,C,T+1), position(R',C,T'), R!=R'.
 not_earliest_waitable(R,T) :- waitable(R,T), waitable(R,T'), T>T'.
 earliest_waitable(R,T) :- not not_earliest_waitable(R,T), waitable(R,T).
 
 % either wait at one waitable timestep or don't
 {wait(R,T) : earliest_waitable(R,T)}1 :- isRobot(R).
-wait(R,T) :- wait(R',T), position(R,C,T+1), position(R',C,T), R!=R'.
+%wait(R,T) :- wait(R',T), position(R,C,T+1), position(R',C,T), R!=R'.
 
 % reconstruct positions
 % before wait

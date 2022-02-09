@@ -4,6 +4,7 @@ from funcs import BMDataFormat, AccumulatedStats
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import files
 
 # ENTER PATHS (with cwd ./plan-merging-project)
 #################################################################################
@@ -12,7 +13,7 @@ bm_data_path = "benchmark_data"
 
 inputter = path + "input.lp"
 plan_switcher = path + "merger_ps_rec3_small.lp"
-waiter = path + "merger_w_inc.lp"
+waiter = path + "merger_w_inc2.lp"
 outputter = path + "output.lp"
 
 benchmark_id = 14
@@ -97,12 +98,12 @@ def merger(bm_id):
 
 # main program
 if __name__ == "__main__":
-    #merger(8)
-    for bm_id in range(len(benchmarks)):
-        if bm_id+1 in [22,23]:
-            continue
-        try:
-            merger(bm_id+1)
-        except:
-            pass
+    merger(23)
+    #for bm_id in range(len(benchmarks)):
+    #    if bm_id+1 in [22,23]:
+    #        continue
+    #    try:
+    #        merger(bm_id+1)
+    #    except:
+    #        pass
     
