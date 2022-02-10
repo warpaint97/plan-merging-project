@@ -26,7 +26,7 @@ position_(R,C,T) :- not wait(R), position(R,C,T).
 
 % find new vertex collisions
 horizon(R,T_MAX-1) :- T_MAX == #count{T : position_(R,C,T)}, isRobot(R).
-vc_cost(R,T,(T_MAX-T)^2) :- position_(R,C,T), position_(R',C,T), R!=R', horizon(R,T_MAX).
+vc_cost(R,T,(T_MAX-T)*(T_MAX-T)) :- position_(R,C,T), position_(R',C,T), R!=R', horizon(R,T_MAX).
 %n_vc(N,C,T) :- N == #count{R : vertex_collision()}.
 %collision(R,R',C,T) :- isRobot(R), isRobot(R'), position_(R,C,T), position_(R',C,T), R!=R'.
 %not_early_collsion(R,R',C,T) :- collision(R,R',C,T), collision(R,R',C',T'), T>T'.
