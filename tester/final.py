@@ -9,6 +9,13 @@ if __name__ == "__main__":
     # initialize merger
     merger = Merger("encodings/sequential", "benchmark_data")
 
-    benchmark_id = 8
-    merger.merge(benchmarks[benchmark_id-1])
+    for i in range(1,len(benchmarks)):
+        benchmark_id = i-1
+        benchmark = benchmarks[benchmark_id]
+        if i not in [22,23,25]:
+            merger.merge(benchmark, vizualize=True, save_data=True)
+
+    #m, _ = merger.switchPlans(merger.getBenchmarkModel(benchmark))
+    #m, _ = merger.wait(m)
+    #merger.vizualize(m, benchmark)
     #################################################################################
