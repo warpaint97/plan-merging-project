@@ -42,7 +42,10 @@ class Clingo:
         print('Rules : ' + str(int(ctl.statistics['problem']['lp']['rules'])) + '\n')
 
         #return model
-        return Model(self.get_optimal_model(), sr.satisfiable, self.models[-1][1], self.models[-1][2], ctl.statistics)
+        if sr.satisfiable:
+            return Model(self.get_optimal_model(), sr.satisfiable, self.models[-1][1], self.models[-1][2], ctl.statistics)
+        else:
+            return Model(model="", satisfiable=False)
 
 
     def isolve(self, files, merger, c_name, f, max_iter, finish=False):

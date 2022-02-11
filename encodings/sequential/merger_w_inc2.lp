@@ -5,8 +5,8 @@ isRobot(R) :- position(R,_,_).
 destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 
 % find times for waitable positions
-has_vc(R) :- position(R,C,T), position(R',C,T), R!=R'.
-waitable(R,T) :- has_vc(R'), position(R,C,T+1), position(R',C,T'), R!=R'.
+has_vc(R,R') :- position(R,C,T), position(R',C,T), R!=R'.
+waitable(R,T) :- has_vc(R,R'), position(R,C,T+1), position(R',C,T'), R!=R'.
 waitable(R,T) :- waitable(R',T), position(R,C,T+1), position(R',C,T'), R!=R'.
 not_earliest_waitable(R,T) :- waitable(R,T), waitable(R,T'), T>T'.
 earliest_waitable(R,T) :- not not_earliest_waitable(R,T), waitable(R,T).
@@ -46,7 +46,7 @@ vc_cost(R,T,(T_MAX-T)*(T_MAX-T)) :- position_(R,C,T), position_(R',C,T), R!=R', 
 % ---------------------------------------------------------------------------------------------
 % minimize number of waits
 #minimize {1@1,R : wait(R,T)}.
-% minimize number of vertex_collisions
+% minimize number of vertex_collisions or at least delay them
 #minimize {C@2,R,T : vc_cost(R,T,C)}.
 
 % ----------------------------------------------------------------------------------------------

@@ -1,17 +1,21 @@
-% - input -----------------------------------------------------------------------
-% reading plans and outputting positions
+% --------------------------------------------------------------------------------
+% REPRESENTATION
 
-% READING PLANS
-% ----------------------------------------------------------------------------------------------
-% reading plans
-position(robot(R),(X,Y),0) :- init(object(robot,R),value(at,(X,Y))).
-move(robot(R),(DX,DY),T) :- occurs(object(robot,R),action(move,(DX,DY)),T).
+robot(R)		:- init(object(robot,R),          _).
+shelf(S)		:- init(object(shelf,S),          _).
+product(A)		:- init(object(product,A),        _).
 
-% calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T).
-%lastposition(R,C,T) :- position(R,C,T), not position(R,,T+1), isRobot(R).
-% ----------------------------------------------------------------------------------------------
+isRobot(robot(R))	:- robot(R).
+isShelf(shelf(S))	:- shelf(S).
+isProduct(product(A))	:- product(A).
+isOrder(order(O))	:- order(O).
 
-% show statements
-#show.
-#show position/3.
+order(O)		     :- init(object(order,O),          _).
+ordered(order(O),product(A)) :- init(object(order,O),          value(line,(A,_))).      % IGNORING QUANTITIES
+
+shelved(shelf(S),product(A)) :- init(object(product,A),        value(on,(S,_))).        % IGNORING QUANTITIES
+
+position((X,Y))		     :- init(object(node,_),           value(at,(X,Y))).
+
+position(robot(R),(X,Y),0) :- init(object(robot,R),          value(at,(X,Y))).
+position(shelf(S),(X,Y),0)   :- init(object(shelf,S),          value(at,(X,Y))).

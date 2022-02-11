@@ -85,10 +85,8 @@ final_vertex(R,R',C,T):- final_position(R,C,T,N), final_position(R',C,T,N'), R!=
 %#minimize {1@1,R,T : wait(R,T)}.
 % ----------------------------------------------------------------------------------------------
 
-% OUTPUT
-% ----------------------------------------------------------------------------------------------
-% reconstruct final moves for output.
-final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_position(R,(C2X,C2Y),T+1,N').
+
+position_(R,C,T) :- final_position(R,C,T,_).
 
 % show statements
 #show.
@@ -98,4 +96,4 @@ final_move(R,(C2X-C1X,C2Y-C1Y),T) :- final_position(R,(C1X,C1Y),T,N), final_posi
 %#show wait/3.
 %#show higher/2.
 %#show final_vertex/4.
-#show occurs(object(robot,R), action(move,D),T) : final_move(robot(R),D,T).
+#show position_/3.

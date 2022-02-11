@@ -78,7 +78,7 @@ last_position(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 horizon(T_MAX) :- T_MAX == #max{T : final_position(R,C,T,X,Y)}.
 %#minimize{T@3 : horizon(T)}.
 
-#minimize {1@4,T,R : final_move(R,C,T)}.
+#minimize {1@4,T,R : final_position(R,_,T,_,_)}.
 
 #minimize {1@1,R,R' : final_collision(R,R',T)}.
 
