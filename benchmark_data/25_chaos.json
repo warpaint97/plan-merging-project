@@ -6,9 +6,9 @@
     "objective_cost": [],
     "instance": "25_chaos",
     "statistics": {
-        "groundingTime": 0.335052490234375,
-        "solvingTime": 0.3619194030761719,
-        "total": 0.6969718933105469,
+        "groundingTime": 0.31946372985839844,
+        "solvingTime": 0.35926246643066406,
+        "total": 0.6787261962890625,
         "atoms": 70830.0,
         "rules": 77429.0
     },

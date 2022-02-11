@@ -6,10 +6,10 @@
     "objective_cost": [],
     "instance": "14_big_time_performance",
     "statistics": {
-        "groundingTime": 0.3996124267578125,
-        "solvingTime": 3.3966312408447266,
-        "total": 3.796243667602539,
-        "atoms": 83243.0,
+        "groundingTime": 0.36569976806640625,
+        "solvingTime": 3.1711788177490234,
+        "total": 3.5368785858154297,
+        "atoms": 83242.0,
         "rules": 112648.0
     },
     "info": null,

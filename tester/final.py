@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     def merge(benchmark_id):
         benchmark = benchmarks[benchmark_id-1]
-        merger.merge(benchmark, vizualize=True, save_data=True, small_switcher=True, deterministic_waiter=False, check_validity=True)
+        merger.merge(benchmark, vizualize=True, save_data=True, small_switcher=True, deterministic_waiter=True, check_validity=True)
 
     def mergeAll(exclude=[22,23,25]):
         for i in range(len(benchmarks)):
@@ -21,6 +21,7 @@ if __name__ == "__main__":
                 continue
             merger.merge(benchmark, vizualize=True, save_data=True, small_switcher=True, deterministic_waiter=False)
 
+    #merger.vizualize(merger.getBenchmarkModel(benchmarks[22-1]))
     merge(22)
 
     #m, _ = merger.switchPlans(merger.getBenchmarkModel(benchmark))

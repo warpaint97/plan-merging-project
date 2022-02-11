@@ -6,10 +6,10 @@
     "objective_cost": [],
     "instance": "22_tons_of_vertex_collisions",
     "statistics": {
-        "groundingTime": 0.4759807586669922,
-        "solvingTime": 0.06485366821289062,
-        "total": 0.5408344268798828,
-        "atoms": 147225.0,
+        "groundingTime": 0.44789695739746094,
+        "solvingTime": 0.06250572204589844,
+        "total": 0.5104026794433594,
+        "atoms": 147224.0,
         "rules": 147223.0
     },
     "info": null,
