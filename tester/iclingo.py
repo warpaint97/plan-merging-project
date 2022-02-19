@@ -5,12 +5,14 @@ from files import ReadFile, WriteFile
 
 #model class
 class Model:
-     def __init__(self, model=None, satisfiable=None, cost=None, number=None, statistics=None):
+     def __init__(self, model=None, satisfiable=None, cost=None, number=None, statistics=None, encoding=None):
         self.model = model
         self.satisfiable = satisfiable
         self.cost = cost
         self.number = number
         self.statistics = statistics
+        #
+        self.encoding = encoding
 
 
 #clingo class
@@ -43,7 +45,7 @@ class Clingo:
 
         #return model
         if sr.satisfiable:
-            return Model(self.get_optimal_model(), sr.satisfiable, self.models[-1][1], self.models[-1][2], ctl.statistics)
+            return Model(self.get_optimal_model(), sr.satisfiable, self.models[-1][1], self.models[-1][2], ctl.statistics, os.path.split(merger)[1])
         else:
             return Model(model="", satisfiable=False)
 

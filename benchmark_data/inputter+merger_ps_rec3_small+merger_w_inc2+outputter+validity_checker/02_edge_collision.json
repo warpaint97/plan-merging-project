@@ -1,15 +1,32 @@
 {
     "groupName": "Aaron, Anton & Louis",
-    "solverName": "Plan Switching + Waiting - Sequential Approach",
+    "solverName": "inputter.lp+merger_ps_rec3_small.lp+merger_ps_rec3_small.lp+merger_ps_rec3_small.lp+merger_w_inc2.lp+merger_w_inc2.lp+outputter.lp+validity_checker.lp",
     "problemType": null,
     "objective": null,
-    "objective_cost": [],
+    "objective_cost": [
+        [],
+        [
+            12,
+            0,
+            0
+        ],
+        [
+            12
+        ],
+        [
+            12
+        ],
+        [],
+        [],
+        [],
+        []
+    ],
     "instance": "02_edge_collision",
     "statistics": {
-        "groundingTime": 0.020040512084960938,
-        "solvingTime": 0.0010967254638671875,
-        "total": 0.021137237548828125,
-        "atoms": 666.0,
+        "groundingTime": 0.021938323974609375,
+        "solvingTime": 0.0019989013671875,
+        "total": 0.023937225341796875,
+        "atoms": 665.0,
         "rules": 702.0
     },
     "info": null,

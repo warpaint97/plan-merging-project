@@ -142,11 +142,24 @@ class Merger:
 
     
     def reportBenchmarkData(self, benchmark, model, acc_stats, save):
+        if not model.satisfiable:
+            return 0
+
         #prepare benchmark data format
         head, tail = os.path.split(benchmark[0:-1])
         print("FINAL STATISTICS:\nBenchmark: {}\nTotal time: {}\nGrounding time: {}\nSolving time: {}\n".format(tail,acc_stats.total,acc_stats.groundingTime,acc_stats.solvingTime))
         if save:
             m_data = BMDataFormat(model, acc_stats)
             m_data.data["instance"] = tail
-            m_data.save(os.path.join(self.bm_data_dir, tail +".json"))
+            # strategy (sequence of solvers (no duplicates))
+            strategy = m_data.data['solverName'].replace('.lp','').split('+')
+            strategy = '+'.join(list(dict.fromkeys(strategy)))
+            dir_path = os.path.join(self.bm_data_dir, strategy)
+
+            if not os.path.exists(dir_path):
+                os.mkdir(dir_path)
+
+            save_path = os.path.join(dir_path, tail +".json")
+            m_data.save(save_path)
+            print('saving benchmark data into: {}'.format(save_path))
         

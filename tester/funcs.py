@@ -34,6 +34,9 @@ class AccumulatedStats:
         self.total = 0.0
         self.atoms = 0.0
         self.rules = 0.0
+        #additional info
+        self.encodings = []
+        self.costs = []
 
     def add(self, model):
         self.groundingTime += model.statistics['summary']['times']['total'] - model.statistics['summary']['times']['solve']
@@ -41,6 +44,9 @@ class AccumulatedStats:
         self.total = self.groundingTime + self.solvingTime
         self.atoms += model.statistics['problem']['lp']['atoms']
         self.rules += model.statistics['problem']['lp']['rules']
+        #
+        self.encodings.append(model.encoding)
+        self.costs.append(model.cost)
 
 
 # json benchmark data
@@ -71,6 +77,9 @@ class BMDataFormat:
             self.addAccumulatedInfo(model, acc_stats)
 
     def addModelInfo(self, model):
+        self.data['solverName'] = model.encoding
+        self.data['objective_cost'] = model.cost
+
         self.data["statistics"] = {
             "groundingTime" : model.statistics["summary"]["times"]["total"] - model.statistics["summary"]["times"]["solve"],
             "solvingTime" : model.statistics["summary"]["times"]["solve"],
@@ -81,6 +90,9 @@ class BMDataFormat:
         self.data["model"] = model.model
 
     def addAccumulatedInfo(self, model, acc_stats):
+        self.data['solverName'] = '+'.join(acc_stats.encodings)
+        self.data['objective_cost'] = acc_stats.costs
+
         self.data["statistics"] = {
             "groundingTime" : acc_stats.groundingTime,
             "solvingTime" : acc_stats.solvingTime,
