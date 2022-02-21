@@ -18,38 +18,39 @@ destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 % ----------------------------------------------------------------------------------------------
 
 
-% CONFLICTS
+% RETRIEVE METRICS
 % ----------------------------------------------------------------------------------------------
+% robots
+n_r(R) :- isRobot(R).
+% positions
+n_p(R,C,T) :- position(R,C,T), isRobot(R).
+% longest path
+n_lp(0..T_MAX) :- T_MAX == #max{T : position(R,C,T)}.
 % edge collision
-:- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C', isRobot(R), isRobot(R').
+n_ec(C,C',T) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C', isRobot(R), isRobot(R').
+r_ec(R) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C', isRobot(R), isRobot(R').
 % vertex collision
-:- position(R,C,T), position(R',C,T), R!=R', isRobot(R), isRobot(R').
+n_vc(C,T) :- position(R,C,T), position(R',C,T), R!=R', isRobot(R), isRobot(R').
+r_vc(R) :- position(R,C,T), position(R',C,T), R!=R', isRobot(R), isRobot(R').
 % vertex collisions with arrived robots
-:- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R', isRobot(R), isRobot(R').
-% robots only move on valid nodes
-:- position(R,C,T), not position(C), isRobot(R).
-% moves only have a magnitude of 0 or 1
-dir((X,Y)) :- move(R,(X,Y),T).
-:- dir((X,Y)), X < -1.
-:- dir((X,Y)), X > 1.
-:- dir((X,Y)), Y < -1.
-:- dir((X,Y)), Y > 1.
-:- dir((X,Y)), |X|+|Y| < 0.
-:- dir((X,Y)), |X|+|Y| > 1.
-% ----------------------------------------------------------------------------------------------
-
-
-% GOAL
-% ----------------------------------------------------------------------------------------------
-processed(A,R) :- ordered(O,A), shelved(S,A), isRobot(R), position(S,C,0), position(R,C,T).
-processed(A) :- processed(A,R).
-:- ordered(O,A), not processed(A).
+n_vc(C,T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R', isRobot(R), isRobot(R').
+r_vc(R,R',T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R', isRobot(R), isRobot(R').
+% fake edge collision
+n_fec(C,C',T) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C', isRobot(R), isRobot(R').
+r_fec(R) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C', isRobot(R), isRobot(R').
 % ----------------------------------------------------------------------------------------------
 
 
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
 #show.
-#show init/2.
-#show occurs/3.
+#show n_p/3.
+#show n_lp/1.
+#show n_ec/3.
+#show r_ec/1.
+#show n_vc/2.
+#show r_vc/1.
+#show n_r/1.
+#show n_fec/3.
+#show r_fec/1.
 % ----------------------------------------------------------------------------------------------

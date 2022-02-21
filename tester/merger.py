@@ -12,12 +12,13 @@ class Merger:
     def __init__(self, encodings_dir, bm_data_dir=None, opts=None):
         # gather all encodings and assign them to variables
         self.inputter = os.path.join(encodings_dir, "inputter.lp")
-        self.plan_switcher = os.path.join(encodings_dir, "merger_ps_rec3_small.lp")
+        self.plan_switcher = os.path.join(encodings_dir, "merger_ps_rec4_small.lp")
         self.plan_switcher_big = os.path.join(encodings_dir, "merger_ps_rec3_big.lp")
         self.waiter_inc = os.path.join(encodings_dir, "merger_w_inc2.lp")
         self.waiter_det = os.path.join(encodings_dir, "merger_w_det2.lp")
         self.outputter = os.path.join(encodings_dir, "outputter.lp")
         self.validity_checker = os.path.join(encodings_dir, "validity_checker.lp")
+        self.retriever = os.path.join(encodings_dir, "retrieve_bm_metrics.lp")
 
         # save benchmark data directory
         self.bm_data_dir = bm_data_dir
@@ -26,18 +27,27 @@ class Merger:
         self.clg = Clingo()
 
 
-    def merge(self, benchmark, vizualize=True, save_data=True, small_switcher=True, deterministic_waiter=False, check_validity=True):
+    def merge(self, benchmark, vizualize=True, save_data=True, automated=True, small_switcher=True, deterministic_waiter=False, check_validity=True):
+        if automated:
+            # defaults
+            small_switcher = True
+            deterministic_waiter = False
+            # switch from non-deterministic to deterministic waiter if the benchmark has more than or equal to 8 robots involved in vertex collisions
+            metrics, _ = self.retrieveBenchmarkMetrics(benchmark)
+            if metrics['r_vc'] >= 8:
+                deterministic_waiter = True
+                
         # read paths only and put into position/3 predicates
-        model, acc_stats = self.convertToPositions(self.getBenchmarkModel(benchmark), AccumulatedStats())
+        model, _ = self.convertToPositions(self.getBenchmarkModel(benchmark))
         # switch plans
-        model, acc_stats = self.switchPlans(model, acc_stats, small=small_switcher)
+        model, acc_stats = self.switchPlans(model, AccumulatedStats(), small=small_switcher)
         # wait
         model, acc_stats = self.wait(model, acc_stats, deterministic=deterministic_waiter)
         # output
-        model, acc_stats = self.convertToAsprilo(model, benchmark, acc_stats)
+        model, _ = self.convertToAsprilo(model, benchmark)
         # check validity if prefered
         if check_validity:
-            model, acc_stats = self.checkValidity(model, acc_stats)
+            model, _ = self.checkValidity(model)
         # save benchmark data if prefered
         self.reportBenchmarkData(benchmark, model, acc_stats, save_data)
         # vizualize if prefered
@@ -162,4 +172,38 @@ class Merger:
             save_path = os.path.join(dir_path, tail +".json")
             m_data.save(save_path)
             print('saving benchmark data into: {}'.format(save_path))
-        
+
+
+    def retrieveBenchmarkMetrics(self, benchmark, acc_stats=None):
+        # check whether benchmark is a benchmark directory path or a model of a benchmark
+        if isinstance(benchmark, Model):
+            model = benchmark
+        else:
+            model = self.getBenchmarkModel(benchmark)
+
+        if not acc_stats:
+            acc_stats = AccumulatedStats()
+
+        m, acc_stats = self.solve(model, self.retriever, acc_stats)
+
+        dct = {}
+        # n robots
+        dct['n_r'] = m.model.count("n_r(")
+        # n positions
+        dct['n_p'] = m.model.count("n_p(")
+        # n longest path
+        dct['n_lp'] = m.model.count("n_lp(")
+        # n vertex collisions
+        dct['n_vc'] = m.model.count("n_vc(")
+        # n robots involved in vertex collisions
+        dct['r_vc'] = m.model.count("r_vc(")
+        # n edge collisions
+        dct['n_ec'] = m.model.count("n_ec(")
+        # n robots involved in edge collisions
+        dct['r_ec'] = m.model.count("r_ec(")
+         # n fake edge collisions
+        dct['n_fec'] = m.model.count("n_fec(")
+        # n fake robots involved in edge collisions
+        dct['r_fec'] = m.model.count("r_fec(")
+
+        return dct, acc_stats
