@@ -12,8 +12,9 @@ class Merger:
     def __init__(self, encodings_dir, bm_data_dir=None, opts=None):
         # gather all encodings and assign them to variables
         self.inputter = os.path.join(encodings_dir, "inputter.lp")
-        self.plan_switcher = os.path.join(encodings_dir, "merger_ps_rec4_small.lp")
-        self.plan_switcher_big = os.path.join(encodings_dir, "merger_ps_rec3_big.lp")
+        self.plan_switcher = os.path.join(encodings_dir, "merger_ps_small_final.lp")
+        self.plan_switcher_big = os.path.join(encodings_dir, "merger_ps_big_final.lp")
+        self.plan_switcher_naive = os.path.join(encodings_dir, "merger_ps_1w.lp")
         self.waiter_inc = os.path.join(encodings_dir, "merger_w_inc2.lp")
         self.waiter_det = os.path.join(encodings_dir, "merger_w_det2.lp")
         self.outputter = os.path.join(encodings_dir, "outputter.lp")
@@ -27,22 +28,33 @@ class Merger:
         self.clg = Clingo()
 
 
-    def merge(self, benchmark, vizualize=True, save_data=True, automated=True, small_switcher=True, deterministic_waiter=False, check_validity=True):
+    def merge(self, benchmark, vizualize=True, save_data=True, automated=True, deterministic_waiter=False, naive_switcher=False, check_validity=True):
         if automated:
-            # defaults
-            small_switcher = True
+            #defaults
             deterministic_waiter = False
-            # switch from non-deterministic to deterministic waiter if the benchmark has more than or equal to 8 robots involved in vertex collisions
-            metrics, _ = self.retrieveBenchmarkMetrics(benchmark)
-            if metrics['r_vc'] >= 8:
-                deterministic_waiter = True
-                
+
         # read paths only and put into position/3 predicates
         model, _ = self.convertToPositions(self.getBenchmarkModel(benchmark))
         # switch plans
-        model, acc_stats = self.switchPlans(model, AccumulatedStats(), small=small_switcher)
+        model, acc_stats = self.switchPlans(model, AccumulatedStats(), small=True)
+
+        if automated:
+            # switch from non-deterministic to deterministic waiter if the benchmark has more than or equal to 8 robots involved in vertex collisions
+            metrics, _ = self.retrieveBenchmarkMetrics(model)
+            if metrics['r_vc'] >= 8:
+                deterministic_waiter = True
+                
+        # switch plans again with big plan switcher if deterministic waiter is selected
+        #if deterministic_waiter:
+            #model, acc_stats = self.switchPlans(model, acc_stats, small=False)
+
         # wait
         model, acc_stats = self.wait(model, acc_stats, deterministic=deterministic_waiter)
+
+        # do last step of naive switching plus one wait if prefered
+        if naive_switcher or deterministic_waiter:
+            model, acc_stats = self.solve(model, self.plan_switcher_naive, acc_stats)
+
         # output
         model, _ = self.convertToAsprilo(model, benchmark)
         # check validity if prefered
@@ -184,6 +196,9 @@ class Merger:
         if not acc_stats:
             acc_stats = AccumulatedStats()
 
+        # transform occurs/3 predicate to position/3 predicates if necessary
+        model, acc_stats = self.convertToPositions(model, acc_stats)
+        # retrieve benchmark metrics from positions
         m, acc_stats = self.solve(model, self.retriever, acc_stats)
 
         dct = {}

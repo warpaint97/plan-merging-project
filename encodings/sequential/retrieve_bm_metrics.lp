@@ -1,19 +1,6 @@
-% - VALIDITY CHECKER ---------------------------------------------------------------------------
-% check validity of the merged plans
-
-% INPUT
-% ----------------------------------------------------------------------------------------------
-#include "./input.lp".
-% ----------------------------------------------------------------------------------------------
-
-
-% READING PLANS
-% ----------------------------------------------------------------------------------------------
-% reading plans
-move(robot(R),(DX,DY),T) :- occurs(object(robot,R),action(move,(DX,DY)),T).
-
-% calculate original positions recursively
-position(R,(X+DX,Y+DY),T+1) :- move(R,(DX,DY),T), position(R,(X,Y),T), isRobot(R).
+% - RETRIEVER OF BENCHMARK METRICS ---------------------------------------------------------------------------
+% retrieve important benchmark metrics
+isRobot(R) :- position(R,_,_).
 destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 % ----------------------------------------------------------------------------------------------
 
@@ -23,21 +10,21 @@ destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 % robots
 n_r(R) :- isRobot(R).
 % positions
-n_p(R,C,T) :- position(R,C,T), isRobot(R).
+n_p(R,C,T) :- position(R,C,T).
 % longest path
 n_lp(0..T_MAX) :- T_MAX == #max{T : position(R,C,T)}.
 % edge collision
-n_ec(C,C',T) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C', isRobot(R), isRobot(R').
-r_ec(R) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C', isRobot(R), isRobot(R').
+n_ec(C,C',T) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C'.
+r_ec(R) :- position(R,C,T), position(R,C',T+1), position(R',C',T), position(R',C,T+1), R!=R', C!=C'.
 % vertex collision
-n_vc(C,T) :- position(R,C,T), position(R',C,T), R!=R', isRobot(R), isRobot(R').
-r_vc(R) :- position(R,C,T), position(R',C,T), R!=R', isRobot(R), isRobot(R').
+n_vc(C,T) :- position(R,C,T), position(R',C,T), R!=R'.
+r_vc(R) :- position(R,C,T), position(R',C,T), R!=R'.
 % vertex collisions with arrived robots
-n_vc(C,T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R', isRobot(R), isRobot(R').
-r_vc(R,R',T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R', isRobot(R), isRobot(R').
+n_vc(C,T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
+r_vc(R,R',T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
 % fake edge collision
-n_fec(C,C',T) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C', isRobot(R), isRobot(R').
-r_fec(R) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C', isRobot(R), isRobot(R').
+n_fec(C,C',T) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C'.
+r_fec(R) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C'.
 % ----------------------------------------------------------------------------------------------
 
 
