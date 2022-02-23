@@ -48,7 +48,7 @@ switch(R',R) :- switch(R,R').
 
 % find switching positions
 switch(R,R',T,T'):- switch(R,R'), earliest_intersect(R,R',C,T,T'), not not_sound_switch(R,R').
-switch(R,R',T,T'):- switch(R,R'), earliest_collision(R,R',T), earliest_collision(R',R,T'), not_sound_switch(R,R').
+switch(R,R',T,T'+1):- switch(R,R'), earliest_collision(R,R',T), earliest_collision(R',R,T'), not_sound_switch(R,R').
 % ----------------------------------------------------------------------------------------------
 
 % RECURSIVELY DEFINE NEW POSITIIONS
