@@ -56,11 +56,12 @@ do_wait(R,C,T-1,A-W) :- waited_so_far(R,T-1,W), wait_for(R,C,T,A), not not_wait_
 do_wait(R,C,T-1,A-W) :- later_at_collision(R,R',C,T,T'), prio(R',C,T,P), not prio(_,C,T,P+1), waited_so_far(R',T,A), waited_so_far(R,T-1,W).
 
 % wait intersecting robots
-do_wait(R',C,T'-1,T+A-T'-A'+1) :- intersect(R,R',C,T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T', T+A>=T'+A'.
+do_wait(R',C,T'-1,T+A-T'-A'+1) :- intersect(R,R',C,T,T'), not later_at_collision(R',R,_,_,_), not earliest_collision(R,R',_,_), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T', T+A>=T'+A'.
 
 % wait for robot ahead of you
-do_wait(R',C',T'+A'-1,X) :- intersect(R,R',C',T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', do_wait(R,C,T+A,X).
-wait(R',C',T'+A-1) :- intersect(R,R',C',T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', wait(R,C,T+A).
+do_wait(R',C',T'+A'-1,X) :- intersect(R,R',C',T,T'), not later_at_collision(R',R,_,_,_), not earliest_collision(R,R',_,_), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', do_wait(R,C,T+A,X).
+%wait(R',C',T'+A-1) :- intersect(R,R',C',T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A+1=T'+A', wait(R,C,T+A).
+%wait(R',C',T'+A-1) :- intersect(R,R',C',T,T'), waited_so_far(R,T,A), waited_so_far(R',T'-1,A'), T<T',  T+A=T'+A'.
 %wait(R',C,T..T+A-1) :- do_wait(R,C,T,A), synced(R,R').
 
 %find waits that occur after next do_wait
