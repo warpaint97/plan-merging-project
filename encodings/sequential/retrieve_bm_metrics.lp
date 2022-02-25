@@ -21,7 +21,7 @@ n_vc(C,T) :- position(R,C,T), position(R',C,T), R!=R'.
 r_vc(R) :- position(R,C,T), position(R',C,T), R!=R'.
 % vertex collisions with arrived robots
 n_vc(C,T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
-r_vc(R,R',T) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
+r_vc(R) :- position(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
 % fake edge collision
 n_fec(C,C',T) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C'.
 r_fec(R) :- position(R,C,T), position(R,C',T+2), position(R',C',T), position(R',C,T+2), R!=R', C!=C'.

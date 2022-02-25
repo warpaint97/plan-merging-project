@@ -16,7 +16,7 @@ class Merger:
         self.plan_switcher_big = os.path.join(encodings_dir, "merger_ps_big_final.lp")
         self.plan_switcher_naive = os.path.join(encodings_dir, "merger_ps_1w.lp")
         self.waiter_inc = os.path.join(encodings_dir, "merger_w_inc2.lp")
-        self.waiter_det = os.path.join(encodings_dir, "merger_w_det2.lp")
+        self.waiter_det = os.path.join(encodings_dir, "merger_w_det_big_final.lp")
         self.outputter = os.path.join(encodings_dir, "outputter.lp")
         self.validity_checker = os.path.join(encodings_dir, "validity_checker.lp")
         self.retriever = os.path.join(encodings_dir, "retrieve_bm_metrics.lp")
@@ -45,15 +45,15 @@ class Merger:
                 deterministic_waiter = True
                 
         # switch plans again with big plan switcher if deterministic waiter is selected
-        #if deterministic_waiter:
-            #model, acc_stats = self.switchPlans(model, acc_stats, small=False)
+        if deterministic_waiter:
+            model, acc_stats = self.switchPlans(model, acc_stats, small=False)
 
         # wait
         model, acc_stats = self.wait(model, acc_stats, deterministic=deterministic_waiter)
 
         # do last step of naive switching plus one wait if prefered
-        if naive_switcher or deterministic_waiter:
-            model, acc_stats = self.solve(model, self.plan_switcher_naive, acc_stats)
+        #if naive_switcher or deterministic_waiter:
+        #    model, acc_stats = self.solve(model, self.plan_switcher_naive, acc_stats)
 
         # output
         model, _ = self.convertToAsprilo(model, benchmark)
