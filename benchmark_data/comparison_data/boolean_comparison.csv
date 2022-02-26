@@ -1,6 +1,6 @@
 ,total,dSOAP
-BM13,False,0.0
-BM14,False,-4.0
+BM13,True,0.0
+BM14,True,-4.0
 BM20,False,0.0
 BM22,,
 BM23,True,0.0

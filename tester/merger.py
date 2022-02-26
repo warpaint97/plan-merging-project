@@ -9,14 +9,14 @@ import files
 
 # class for the final merger
 class Merger:
-    def __init__(self, encodings_dir, bm_data_dir=None, opts=None):
+    def __init__(self, encodings_dir, bm_data_dir=None):
         # gather all encodings and assign them to variables
         self.inputter = os.path.join(encodings_dir, "inputter.lp")
         self.plan_switcher = os.path.join(encodings_dir, "merger_ps_small_final.lp")
         self.plan_switcher_big = os.path.join(encodings_dir, "merger_ps_big_final.lp")
-        self.plan_switcher_naive = os.path.join(encodings_dir, "merger_ps_1w.lp")
-        self.waiter_inc = os.path.join(encodings_dir, "merger_w_inc2.lp")
-        self.waiter_det = os.path.join(encodings_dir, "merger_w_det_big_final.lp")
+        self.waiter_inc = os.path.join(encodings_dir, "merger_w_inc_final.lp")
+        self.waiter_det = os.path.join(encodings_dir, "merger_w_det_small_final.lp")
+        self.waiter_det_big = os.path.join(encodings_dir, "merger_w_det_big_final.lp")
         self.outputter = os.path.join(encodings_dir, "outputter.lp")
         self.validity_checker = os.path.join(encodings_dir, "validity_checker.lp")
         self.retriever = os.path.join(encodings_dir, "retrieve_bm_metrics.lp")
@@ -28,7 +28,7 @@ class Merger:
         self.clg = Clingo()
 
 
-    def merge(self, benchmark, vizualize=True, save_data=True, automated=True, deterministic_waiter=False, naive_switcher=False, check_validity=True):
+    def merge(self, benchmark, vizualize=True, save_data=True, automated=True, deterministic_waiter=False, check_validity=True):
         if automated:
             #defaults
             deterministic_waiter = False
@@ -50,10 +50,6 @@ class Merger:
 
         # wait
         model, acc_stats = self.wait(model, acc_stats, deterministic=deterministic_waiter)
-
-        # do last step of naive switching plus one wait if prefered
-        #if naive_switcher or deterministic_waiter:
-        #    model, acc_stats = self.solve(model, self.plan_switcher_naive, acc_stats)
 
         # output
         model, _ = self.convertToAsprilo(model, benchmark)
@@ -96,12 +92,20 @@ class Merger:
         model, acc_stats = self.convertToPositions(model, acc_stats)
         # do deterministic or non-deterministic waiting
         if deterministic:
-            model, acc_stats = self.solve(model, self.waiter_det, acc_stats)
+            # first try small deterministic waiter
+            tmp_model, acc_stats = self.solve(model, self.waiter_det, acc_stats)
             # check for potential vertex collision remnants
-            if "final_vertex" in model.model:
-                print("final_vertex occurences: {}".format(model.model.count("final_vertex")))
-                # try the incremental and non-deterministic waiter to rid these last vertex collisions
-                model, acc_stats = self.wait(model, acc_stats, deterministic=False)
+            if "final_vertex" in tmp_model.model:
+                print("final_vertex occurences: {}".format(tmp_model.model.count("final_vertex")))
+                # try the big deterministic waiter to get rid of these last vertex collisions
+                model, acc_stats = self.solve(model, self.waiter_det_big, acc_stats)
+                # check for potential vertex collision remnants
+                if "final_vertex" in model.model:
+                    print("final_vertex occurences: {}".format(model.model.count("final_vertex")))
+                    # try the incremental and non-deterministic waiter to rid these last vertex collisions
+                    model, acc_stats = self.wait(model, acc_stats, deterministic=False)
+            else:
+                return tmp_model, acc_stats
         else:
             model, acc_stats = self.fix_point_solve(model, self.waiter_inc, acc_stats)
         return model, acc_stats

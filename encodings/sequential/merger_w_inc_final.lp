@@ -1,8 +1,7 @@
-% - waiter sequential -----------------------------------------------------------------------
+% - non-deterministic incremental waiter for sequential approach -----------------------------------
 
 % init
 isRobot(R) :- position(R,_,_).
-destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 
 % find times for waitable positions
 has_vc(R,R') :- position(R,C,T), position(R',C,T), R!=R'.
@@ -13,7 +12,6 @@ earliest_waitable(R,T) :- not not_earliest_waitable(R,T), waitable(R,T).
 
 % either wait at one waitable timestep or don't
 {wait(R,T) : earliest_waitable(R,T)}1 :- isRobot(R).
-%wait(R,T) :- wait(R',T), position(R,C,T+1), position(R',C,T), R!=R'.
 
 % reconstruct positions
 % before wait
@@ -27,10 +25,6 @@ position_(R,C,T) :- not wait(R), position(R,C,T).
 % find new vertex collisions
 horizon(R,T_MAX-1) :- T_MAX == #count{T : position_(R,C,T)}, isRobot(R).
 vc_cost(R,T,(T_MAX-T)*(T_MAX-T)) :- position_(R,C,T), position_(R',C,T), R!=R', horizon(R,T_MAX).
-%n_vc(N,C,T) :- N == #count{R : vertex_collision()}.
-%collision(R,R',C,T) :- isRobot(R), isRobot(R'), position_(R,C,T), position_(R',C,T), R!=R'.
-%not_early_collsion(R,R',C,T) :- collision(R,R',C,T), collision(R,R',C',T'), T>T'.
-%earliest_collision(R,R',C,T) :- collision(R,R',C,T), not not_early_collsion(R,R',C,T).
 
 % INTEGRITY CONSTRAINTS
 % ----------------------------------------------------------------------------------------------
@@ -39,6 +33,7 @@ vc_cost(R,T,(T_MAX-T)*(T_MAX-T)) :- position_(R,C,T), position_(R',C,T), R!=R', 
 % remove new fake edge collision
 :- position_(R,C,T), position_(R,C',T+2), position_(R',C',T), position_(R',C,T+2), R!=R', C!=C'.
 % remove new vertex collisions with arrived robots
+destination(R,C,T) :- position(R,C,T), not position(R,_,T+1), isRobot(R).
 :- position_(R,C,T), destination(R',C,T_DEST), T>T_DEST, R!=R'.
 % ----------------------------------------------------------------------------------------------
 

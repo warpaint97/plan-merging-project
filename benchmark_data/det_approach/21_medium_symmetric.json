@@ -1,6 +1,6 @@
 {
     "groupName": "Aaron, Anton & Louis",
-    "solverName": "merger_ps_small_final.lp+merger_ps_small_final.lp+merger_ps_small_final.lp+merger_ps_big_final.lp+merger_ps_big_final.lp+merger_w_det_big_final.lp",
+    "solverName": "merger_ps_small_final.lp+merger_ps_small_final.lp+merger_ps_small_final.lp+merger_ps_big_final.lp+merger_ps_big_final.lp+merger_w_det_small_final.lp",
     "problemType": null,
     "objective": null,
     "objective_cost": [
@@ -28,9 +28,9 @@
     ],
     "instance": "21_medium_symmetric",
     "statistics": {
-        "groundingTime": 0.03590202331542969,
+        "groundingTime": 0.034908294677734375,
         "solvingTime": 0.0029926300048828125,
-        "total": 0.0388946533203125,
+        "total": 0.03790092468261719,
         "atoms": 3406.0,
         "rules": 3599.0
     },

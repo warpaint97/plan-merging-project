@@ -82,7 +82,8 @@ final_position(R,C',T+1,N) :- position(R,C',T-N+1), not wait(R,_,T), final_posit
 
 % OUTPUT
 % ----------------------------------------------------------------------------------------------
-
+% vertex collision, as a fact for debugging
+final_vertex(R,R',C,T):- final_position(R,C,T,N), final_position(R',C,T,N'), R!=R'.
 
 
 position_(R,C,T) :- final_position(R,C,T,N).
@@ -91,15 +92,5 @@ position_(R,C,T) :- final_position(R,C,T,N).
 
 % show statements
 #show.
-%#show overtake_edge_collision/4.
-%#show earliest_intersect/4.
-%#show switch/4.
-%#show recswitch/4.
-%#show last_position/3.
-%#show last_final_position/3.
-%#show final_edge_collision/3.
-%#show final_fake_edge_collision/3.
-%#show overtake_edge_collision/4.
-%#show final_overtake_edge_collision/4.
-%#show final_position/5.
+#show final_vertex/4.
 #show position_/3.
