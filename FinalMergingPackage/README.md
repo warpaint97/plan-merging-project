@@ -10,4 +10,10 @@ The package contains:
 The core merge method takes an absolute path to a benchmark file and an absolute path of a directory for storing the resulting json files in.
 It returns the result of the benchmark in a json file with the benchmark name in the given directory.
 
+Special libraries being used:
+- clingo
+- parse
+- numpy
+- matplotlib
+
 Happy comparing:)
