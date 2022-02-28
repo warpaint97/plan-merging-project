@@ -1,4 +1,4 @@
-det big,total,n conflicts
+det comp,total,n conflicts
 BM13,0.9431,0
 BM14,0.0648,0
 BM20,0.0309,0

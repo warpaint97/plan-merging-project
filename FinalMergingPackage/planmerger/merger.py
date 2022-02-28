@@ -1,11 +1,11 @@
 #import libraries
-from iclingo import Clingo, Model
-import funcs
-from funcs import BMDataFormat, AccumulatedStats
+from planmerger.iclingo import Clingo, Model
+import planmerger.funcs as funcs
+from planmerger.funcs import BMDataFormat, AccumulatedStats
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import files
+import planmerger.files as files
 
 # class for the final merger
 class Merger:
@@ -33,7 +33,7 @@ class Merger:
         if automated:
             #defaults
             deterministic_waiter = False
-
+        print(self.getBenchmarkModel(benchmark).model)
         # read paths only and put into position/3 predicates
         model, _ = self.convertToPositions(self.getBenchmarkModel(benchmark))
         # switch plans

@@ -1,4 +1,4 @@
-from files import WriteFile, ReadFile
+from planmerger.files import WriteFile, ReadFile
 import glob
 import parse as parser
 import json
