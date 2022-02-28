@@ -4,6 +4,8 @@ This package is supposed to be used by other groups to easily use our plan merge
 
 The package contains:
 - `interface.py`
+    interface.py provides the main merge method
 - `benchmarks/`
+
 - `planmerger/`
 - `data/`
