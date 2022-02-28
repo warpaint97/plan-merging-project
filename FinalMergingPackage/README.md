@@ -3,8 +3,8 @@
 This package is supposed to be used by other groups to easily use our plan merger on their benchmarks as well as using our benchmarks on their plan merger.
 
 The package contains:
-- `interface.py` provides the main merge method. ( mess with this:) )
-- `benchmarks/` contains all of our groups benchmarks in single .lp files. (shouldn't be messed with)
+- `interface.py` provides the main merge method. (please mess with this:) )
+- `benchmarks/` contains all of our groups benchmarks in single .lp files. (no need to mess with this)
 - `planmerger/` contains every python script and ASP encoding needed for our plan merger. (DO NOT MESS WITH THIS)
 - `data/` is a directory meant to store resulting json files in. (optional)
 
