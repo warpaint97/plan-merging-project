@@ -6,3 +6,4 @@ The package contains:
 - `interface.py`
 - `benchmarks/`
 - `planmerger/`
+- `data/`
