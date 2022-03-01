@@ -12,8 +12,8 @@ We aim to find a solution for intelligently merging plans of individual robots i
 - `figures/` contains graphs and other figures for analysis of our merger.
 - `benchmark_data/` contains a set of json files with important benchmark data of our solution.
 - `FinalMergingPackage/` contains all our necessary encodings, benchmarks and python scripts of our project provided to the other groups,
-- `Report` contains our report paper including the LaTeX dependencies.
-- `Presentation` contains our presentation slides.
+- `Report/` contains our report paper including the LaTeX dependencies.
+- `Presentation/` contains our presentation slides.
 
 ## Contributors
 - Aaron Bishop: aaron.bishop@uni-potsdam.de
