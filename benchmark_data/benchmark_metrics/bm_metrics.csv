@@ -1,4 +1,4 @@
-,n robots,n pos,longest path,n vcs,n robots had vcs,n ecs,n robots had ecs,n fake ecs,n robots had fake ecs
+,n robots,n pos,horizon,n vcs,n robots had vcs,n ecs,n robots had ecs,n fake ecs,n robots had fake ecs
 BM1,1,5,5,0,0,0,0,0,0
 BM2,2,14,7,0,0,2,2,0,0
 BM3,2,10,5,1,2,0,0,0,0
