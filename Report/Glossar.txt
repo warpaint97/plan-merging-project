@@ -1,0 +1,7 @@
+Robot           - not Agent, ...
+Plan switching  - not goal swapping, plan swapping, ...
+waiting         - 
+instance        - is the Problem instance without the plans
+conflict resolving plan switcher
+
+use exact predicate names
