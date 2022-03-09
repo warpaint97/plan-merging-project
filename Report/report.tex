@@ -107,23 +107,25 @@ In general this plan switching step can be done as preprocessing reducing the si
 \newpage
 
 \section{Problem description}
-All instances are based on a field of nodes. The Nodes can be populated with robots, shelf's and picking stations. But hence we are working in the M domain, the picking stations fall apart.
-Here, a complete instance consists of a set of robots and a set of shelf's, that are placed on the nodes. The goal of each Robot is to reach a certain shelf. Therefore each robot has a plan how he can reach his destination shelf. The Plans consist of a sequence of single moves. For example, the plan for the robot in Figure 1 is given by the sequence [(1,0), (0,-1), (1,0), (0,-1)]\\
-The plans of the individual robots are not constructed in such a way that they take the other robots into account. Therefore, in an instance with multiple robots, the plans may overlap and cause collisions.\\
-The case where two robots want to move to the same field at the same time is called vertex collision. If two robots face each other and want to swap places is called edge collision.\\
-The task of the merger that we have developed in this project, is to find a way to redesign the plans of the robots in such a way, that no more collisions occur.
+All instances are represented by a set of nodes or cells with coordinates. In general the Nodes can be populated with robots, shelf's and picking stations. Since we are working in the M domain, the picking stations are not a part of our problem description.
+In this domain a complete instance consists of a set of robots and a set of shelf's, that are placed on the nodes. The goal of each Robot is to reach a certain shelf. Therefore each robot has an initial plan how to reach its destination shelf. The plans consist of a sequence of single moves. For example, the plan for the robot in Figure 1 is given by the sequence [(1,0), (0,-1), (1,0), (0,-1)]\\
+Only moves between neighbouring nodes are possible. Diagonal movement is not allowed.
+In an instance with multiple robots, the initial plans may overlap and cause collisions.\\
+We refer to the case where two robots move to the same node at the same time as a vertex collision. The scenario of two robots swapping places so that at the next timestep both are at the previous position of the other robot is called edge collision.\\
+Fig.2 shows examples of these two simple collision cases.
+In addition to the points discussed in 1.2. the main task of the plan merging algorithm that we have developed in this project, is to find a way to redesign the plans of the robots in such a way, that no more collisions occur.
 
 \begin{figure}[!h]
   \centering
   \subfloat[][]{\includegraphics[width=.4\textwidth]{images/collisions/Vertex_collision.png}}\quad
   \subfloat[][]{\includegraphics[width=.4\textwidth]{images/collisions/Edge_collision.png}}\\
-  \caption{Two collision types}
+  \caption{The two types of collisions that need to be prevented by applying plan merging: vertex collision (a) and edge collision (b).}
   \label{fig2}
 \end{figure}
 
 \newpage
 
-\section{Approaches}
+\section{Plan Merging Approaches}
 
 \subsection{Encoding the instance}
 The position C of a robot R at a timestep T can be inferred from moves on the original plan and starting positions in a recursive manner using:
@@ -448,13 +450,13 @@ Furthermore, plenty of auxiliary methods required for the core methods, presente
 
 \section{Evaluation}
 \subsection{Benchmarks}
-Throughout the course of our project, we constantly were testing our latest encodings on different benchmarks to verify the integrity and quality of our plan merger. All of the benchmarks stored in our \emph{GitHub} repository \cite{project1} are tailored to serve a specific purpose. For the first benchmarks this includes the isolation of vertex and edge collisions. As our work began to progress beyond these simple problems, we could venture towards more complex testing scenarios from multiple simultaneous collisions to novel consecutive collisions caused by the algorithm during the solving process. As soon as these types of very particular benchmarks were solvable for our merger, the problem of having a good time performance became more apparent. Thereby, there was a lot of time spent on improving the time performance of our plan merging encodings which is why there are some very large benchmarks to found in our repository. These types of benchmarks are intended to unveil the time complexity of a plan merging encoding. Thus, some of our old and highly inefficient approaches e.g. \emph{Layer Approach} and \emph{Naive Choice Rule Waiting} are not able to solve these within acceptable times.
+Throughout the course of our project, we constantly have been testing our latest encodings on different benchmark instances to verify the integrity and quality of our plan merger. All of the benchmarks stored in our \emph{GitHub} repository \cite{project1} are tailored to test a specific feature of our encoding. For the first benchmarks this includes the isolation of vertex and edge collisions. As our work began to progress beyond these simple problems, we could venture towards more complex testing scenarios from multiple simultaneous collisions to novel consecutive collisions caused by the algorithm during the solving process. As soon as these types of very particular benchmarks were solvable for our merger, the problem of having a good time performance became a central criteria for evaluating our approach. Thereby, there was a lot of time spent on improving the time performance of our plan merging algorithms which is why there are some very large instances to be found in our repository. These types of benchmarks are intended really put the time complexity of a plan merging encoding to a test. Thus, some of our old and highly inefficient approaches e.g. \emph{Layer Approach} and \emph{Naive Choice Rule Waiting} are not able to solve these within acceptable time.
 For this paper and the following sections, based on the size of the benchmarks inside our repository, we will define an ``unacceptable time'' as a total computation time above five minutes which will result in a lack of an entry inside a table.
 
 
 
 \subsection{Benchmark Tool}
-In means of aiding in the process of custom benchmark creation for all of the groups, we have developed the \emph{Benchmark Tool}\cite{project1} in \emph{Python}. It allows a user to create their own benchmark, including the instance and plans, by interacting with an intuitive, quick and easy ``Graphical User Interface (GUI)''. Of course there are other ways of doing this available, whether by writing the logical program of facts manually or using the asprilo vizualizer and its instance creation functionalities. But in practice, a lot of time had been saved using our tool because it is tailored towards our specific needs within this project. Mainly, this is due to the reasons that we are focusing solely on the M-domain and require the presence of predefined paths for each robot as input for the plan merger. Also, this tool will export and import a benchmark in the correct directory structure and naming convention according to our groups agreed benchmark format.
+In means of aiding in the process of custom benchmark creation for all of the groups, we have developed the \emph{Benchmark Tool}\cite{project1} in \emph{Python}. It allows a user to create their own benchmarks, including the instance and plans, by interacting with an intuitive, quick and easy ``Graphical User Interface (GUI)''. Of course there are other ways of doing this, whether by writing the logical program of facts manually or using the asprilo vizualizer and its instance creation functionalities. But in practice, a lot of time had been saved using our tool because it is tailored towards our specific needs within this project. Mainly, this is due to the reasons that we are focusing solely on the M-domain and require the presence of predefined paths for each robot as input for the plan merger. Also, this tool will export and import a benchmark in the correct directory structure and naming convention according to our groups agreed benchmark format.
 
 
 \subsection{Evaluation Setup}
@@ -525,7 +527,7 @@ These benchmarks are the largest in our collection and all focus on different as
 
 \subsubsection{Approach Selection}
 On the basis of many tests throughout our project, we have been trying out various approaches, as mentioned earlier, where we could quickly differentiate between viable options and less viable ones such as the \emph{Layer Approach} or the \emph{Naive Choice Rule Waiter} that caused the computation time to explode on bigger benchmarks.\\
-Near the end of our project we have worked mostly on a \emph{Sequential} plan merging approach which lead us to have better performance. This took us even one step further to the \emph{interative fixpoint solving} of the plan switching step and the waiting step.
+Near the end of our project we have worked mostly on a \emph{Sequential} plan merging approach which lead us to have better performance. This took us even one step further to the \emph{interative fixed point solving} of the plan switching step and the waiting step.
 Therefore, we will stick with only the \emph{Sequential} methods and will compare between:
 \begin{itemize}
     \item \textbf{Simple + Preventive Plan Switching + Incremental Waiting}
@@ -608,11 +610,11 @@ The next step is to take a deeper look into some benchmark attributes. But inste
     \label{tab:tab1}
 \end{table}
 \newpage
-After taking a quick look on the table, we can find very high values for robots being involved in vertex collisions for Benchmark 22 and 23. This makes sense because the \emph{Non-deterministic Incremental Waiting} allows only robots to wait which are involved in a vertex collision. Benchmark 25 has a value of 9 which is not high compared to other unproblematic benchmarks like Benchmark 14, 19, 20, 21, 24 and 26. But in Benchmark 25, the number of total positions is the highest among those. All other attributes do not seem to be correlated with the cause of the significant differences in both time and optimality.
-From this, we can deduce that there is a strong correlation between the total computation time of the \emph{Incremental Waiter} and the number of robots involved in a robot. Therefore, it makes sense to use it as a metric to make a decision on which approach we should choose for the solving. Besides this, the number of all positions which is nothing else than the SOAP can be used as a metric as well, since this seems to have an influence on the time and optimality. Obviously, it does not make sense for the SOAP to determine the optimality of a model but a high initial SOAP yields more local minima of optimality that the \emph{Incremental Waiting} may fall into.
+We observe very high values for robots being involved in vertex collisions for Benchmark 22 and 23. This makes sense because the \emph{Non-deterministic Incremental Waiting} allows only robots to wait which are involved in a vertex collision. Benchmark 25 has a value of 9 which is not too high compared to easier to solve benchmarks like Benchmark 14, 19, 20, 21, 24 and 26. But in Benchmark 25, the number of total positions is the highest among those. All other attributes do not seem to be correlated with the cause of the significant differences in both time and optimality.
+From this, we can deduce that there is a strong correlation between the total computation time of the \emph{Incremental Waiter} and the number of robots involved in a robot. Therefore, it makes sense to use it as a metric to make a decision on which approach we should choose for the solving. Besides this, the number of all positions which is nothing else than the SOAP can be used as a metric as well, since this seems to have an influence on the running time and length of the final plans. Obviously, it does not make sense for the SOAP to determine the optimality of a model but a high initial SOAP yields more local minima of optimality that the \emph{Incremental Waiting} may fall into.
 
-\subsection{Group Comparison}
-Coupled with our previous internal comparison we must also compare our final plan merging solution to the other groups that took part in the Intelligent Logistics Project in order to fully assess the quality of our solution. In this semester, four groups have participated in the project.
+\subsection{Between Group Comparison}
+After testing our different approaches on large benchmarks we also compared our final plan merging solution to the other groups that took part in the Intelligent Logistics Project in order to fully assess the quality of our solution. In this semester, four groups have participated in the project.
 \begin{itemize}
     \item \textbf{Group 1:} A. Simon, F. Franz\cite{project2}
     \item \textbf{Group 2:} A. Bishop, A. Rabe, L. Donath (our group)\cite{project1}
@@ -642,12 +644,12 @@ RAM:            8GB, DDR4
     \label{fig:my_label}
 \end{figure}
 
-The two bar plots above allow us to gain some insight on the performance and optimality of the approaches among all groups. Unfortunately, due to problems and differences of reading the benchmark instances between the groups we were not able to compare the results on the benchmarks of the other groups. For completeness we plotted the results of the groups on all of our benchmarks including very small ones but in order to keep the plots compact and manageable we chose to show our collection of large benchmarks once again. The results on the small benchmark instances were not very informational but it showed that Aurelien and Florian's group \cite{project2} generally had slightly shorter total computation times and Alan \cite{project3} slightly longer ones compared the the other groups. But the majority of the results were all under 0.1 seconds, so the variance alone will have a big effect.
+The two bar plots above allow us to gain some insight on time performance and optimality of the approaches among all groups. Unfortunately, due to problems and differences of reading the benchmark instances between the groups it as not possible to compare the results on the benchmarks of the other groups. For completeness we plotted the results of the groups on all of our benchmarks including very small ones but in order to keep the plots compact and manageable we chose to show our collection of large benchmarks once again. The results on the small benchmark instances were not very informational but it showed that Aurelien and Florian's group \cite{project2} generally had slightly shorter total computation times and Alan \cite{project3} slightly longer ones compared the the other groups. But the majority of the results were all under 0.1 seconds, so the variance alone will have a big effect.
 
 On Fig.5 we can see four columns for each group representing the total computation time for each benchmark. The lower the column is, the shorter was the total time and if there lacks a column for a group, it means that either there was a timeout or no model found. The latter is the case for the group of Aurelien and Florian \cite{project2} and Alan \cite{project3} on Benchmark 14, 22, 25 and 26.
 Also, on the large benchmark instances we can see that the total time of our group \cite{project1} and Daniel, Nils and Jacob's group \cite{project4} are mostly similar since they chose a very similar approach to ours by allowing multi-shot plan switching and a consecutive waiting step. It seems though, that on Benchmark 25 and 26 our group had faster results because the power of the deterministic waiting begins to show there.
 
-Fig.5 shows us the dSOAP of the solutions of all four groups. This plot is very handy because it allows us to see how optimal the models are regarding our chosen metric. While the other groups may have focused on other metrics such as the similarity to the original plans it may not be fair to compare these results directly. But a negative dSOAP indicates that path lengths have been reduced which implies that methods such as plan switching must have been used.
+Fig.5 shows the dSOAP of the solutions of all four groups. This plot allows us to see how optimal the models are regarding our chosen metric. While the other groups may have focused on other metrics such as the similarity to the original plans it may not be fair to compare these results directly. But a negative dSOAP indicates that path lengths have been reduced which implies that methods such as plan switching must have been used.
 The plot Fig.5 quickly reveals that Aurelien and Florian's group \cite{project2} did not allow any plan switching due to the solely positive dSOAP values on the plot. On the other hand, it shows that the remaining groups all had the ability to reduce plan lengths.
 
 \section{Conclusion}
